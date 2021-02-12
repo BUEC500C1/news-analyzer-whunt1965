@@ -4,8 +4,6 @@ import tracemalloc
 import cProfile
 import re
 
-# Start trace malloc
-tracemalloc.start()
 
 # ==================
 # Start Tests
@@ -21,21 +19,24 @@ def test_placeholder():
 # ==================
 
 
-# ==================
-# Tracemalloc utils
-# ==================
-
-# Get snapshot
-snapshot = tracemalloc.take_snapshot()
-top_stats = snapshot.statistics('lineno')
-
-print("[ Top 5 ]")
-for stat in top_stats[:5]:
-    print(stat)
+#Print header for report
+def printTitle():
+    print()
+    print("===NLP ANALYZER TESTS===")
+    print()
 
 # Include all test functions here to use memory and CPU profilers
 def main():
+    printTitle()
+    tracemalloc.start()# Start trace malloc
     test_placeholder()  
+
+    # Get snapshot
+    snapshot = tracemalloc.take_snapshot()
+    top_stats = snapshot.statistics('lineno')
+    print("[ Top 5 ]")
+    for stat in top_stats[:5]:
+        print(stat)
 
 if __name__ == '__main__':
     cProfile.run('main()')
