@@ -42,4 +42,4 @@ jobs:
         coverage report -m
     - name: Run Trace Malloc
       run: |
-        tracemalloc 
+        python -m tracemalloc 
