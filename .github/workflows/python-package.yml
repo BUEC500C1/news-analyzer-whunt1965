@@ -42,4 +42,4 @@ jobs:
         coverage report -m
     - name: Tracemalloc
       run: |
-        coverage run -m tracemalloc 
+        run -m tracemalloc 
