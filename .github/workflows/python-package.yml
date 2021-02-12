@@ -34,14 +34,14 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest and show mem usage 
+    - name: Test with pytest and show Top mem usage
       run: |
-        coverage run -m pytest 
+        coverage run -m pytest -s
     - name: Show coverage report
       run: |
         coverage report -m
-    - name: Show Mem Usage
-      env:
-        FILES: tests/*
+    - name: Detailed mem Usage
       run: |
-        for f in $FILES; do python3 f;done
+        python3 tests/test_file_uploader
+        python3 tests/test_newsfeed_ingester
+        python3 tests/test_nlp_analyzer
