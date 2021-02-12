@@ -42,4 +42,4 @@ jobs:
         coverage report -m
     - name: Run Mem Check
       run: |
-        python3 ../tests/test_newsfeed_ingester.py
+        run -m pytest --capture=tee-sys
