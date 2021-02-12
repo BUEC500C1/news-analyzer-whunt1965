@@ -18,9 +18,6 @@ def test_placeholder():
 # Ends Tests
 # ==================
 
-# ==================
-# Tracemalloc utils
-# ==================
 
 #Print header for report
 def printTitle():
