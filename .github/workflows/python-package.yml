@@ -42,4 +42,4 @@ jobs:
         coverage report -m
     - name: Run Mem Check
       run: |
-        pytest --capture=tee-sys
+        tracemalloc run pytest -m --capture=tee-sys
