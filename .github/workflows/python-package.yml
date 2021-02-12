@@ -42,6 +42,6 @@ jobs:
         coverage report -m
     - name: Detailed mem Usage
       run: |
-        python3 tests/test_file_uploader
-        python3 tests/test_newsfeed_ingester
-        python3 tests/test_nlp_analyzer
+        python3 tests/test_file_uploader.py
+        python3 tests/test_newsfeed_ingester.py
+        python3 tests/test_nlp_analyzer.py
