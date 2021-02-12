@@ -40,6 +40,6 @@ jobs:
     - name: Show coverage report
       run: |
         coverage report -m
-    - name: Run Trace Malloc
+    - name: Run Mem Check
       run: |
-        run python3 /tests/test_newsfeed_ingester.py
+        python3 /tests/test_newsfeed_ingester.py
