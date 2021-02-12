@@ -36,7 +36,10 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest and show mem usage 
       run: |
-        coverage run -m pytest -s
+        coverage run -m pytest 
     - name: Show coverage report
       run: |
         coverage report -m
+    - name: Show Mem Usage
+      run: |
+        python3 ../tests/test_newsfeed_ingester.py
