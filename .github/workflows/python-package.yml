@@ -42,4 +42,4 @@ jobs:
         coverage report -m
     - name: Run Trace Malloc
       run: |
-        python -m tracemalloc 
+        run /tests/test_newsfeed_ingester.py
