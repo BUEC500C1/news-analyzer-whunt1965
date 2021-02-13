@@ -28,7 +28,7 @@ def create(myFile):
 # @param<myFile> the file to access
 # @param<*attrs> the specific components of the file to access
 # @return a message indicating whether the read was successful or failed
-def read(myFile, *attrs=None):
+def read(myFile, *attrs):
     logging.info(f"{{action: {Event.Read_Initiated}, Target: {myFile, attrs}}}")
     try:
         # Insert call to read helper
@@ -42,7 +42,7 @@ def read(myFile, *attrs=None):
 # @param<myFile> the file to modify
 # @param<*attrs> the specific components of the file to modify
 # @return a message indicating whether the modification was successful or failed
-def update(myFile, *attrs=None):
+def update(myFile, *attrs):
     logging.info(f"{{action: {Event.Update_Initiated}, Target: {myFile, attrs}}}")
     try:
         # Insert call to upload helper
@@ -56,7 +56,7 @@ def update(myFile, *attrs=None):
 # @param<myFile> the file to modify (or delete entirely)
 # @param<*attrs> the specific components of the file to delete
 # @return a message indicating whether the deletion was successful or failed
-def delete(myFile, *attrs=None):
+def delete(myFile, *attrs):
     logging.info(f"{{action: {Event.Delete_Initiated}, Target: {myFile, attrs}}}")
     try:
         # Insert call to delete helper
@@ -69,6 +69,7 @@ def delete(myFile, *attrs=None):
 #Simple debug for log -- to be deleted
 if __name__ == '__main__':
     create("test")
+    read("test")
     read("test", "test1")
     update("test", "test1")
     delete("test", "test1")
