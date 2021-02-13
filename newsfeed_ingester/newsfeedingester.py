@@ -16,44 +16,44 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='%(asctime)s 
 # @param<*keywords> a list of keyword(s) for the query
 # @return A JSON object containing the results of the query
 def keyword_query(numresults, *keywords):
-    logging.info(f"{{action: {Event.KWordQuery_Initiated}, Target: {keywords}, NumResults: {numresults}}}")
+    logging.info(f"{{Event: {Event.KWordQuery_Initiated}, Target: {keywords}, NumResults: {numresults}}}")
     try:
         # Insert call to keyword_query helper
-        logging.info(f"{{action: {Event.KWordQuery_Success}, Target: {keywords}, NumResults: {numresults}}}")
+        logging.info(f"{{Event: {Event.KWordQuery_Success}, Target: {keywords}, NumResults: {numresults}}}")
         return 'results'
     except:
-        logging.error(f"{{action: {Event.KWordQuery_Error}, Target: {keywords}, NumResults: {numresults}}}")
+        logging.error(f"{{Event: {Event.KWordQuery_Error}, Target: {keywords}, NumResults: {numresults}}}")
         return "Unable to process query"
 
-# Queries newsfeed sources based on provided keyword and returns a specified number of results
+# Queries newsfeed sources based on provided first/last name and returns a specified number of results
 # @param<numresults> The number of results to return 
 # @param<fname> the first name of the person to query
 # @param<lname> the last name of the person to query
 # @return A JSON object containing the results of the query
 def person_query(numresults, fname, lname):
-    logging.info(f"{{action: {Event.PersonQuery_Initiated}, Target: {fname, lname}, NumResults: {numresults}}}")
+    logging.info(f"{{Event: {Event.PersonQuery_Initiated}, Target: {fname, lname}, NumResults: {numresults}}}")
     try:
         # Insert call to keyword_query helper
-        logging.info(f"{{action: {Event.PersonQuery_Success}, Target: {fname, lname}, NumResults: {numresults}}}")
+        logging.info(f"{{Event: {Event.PersonQuery_Success}, Target: {fname, lname}, NumResults: {numresults}}}")
         return 'results'
     except:
-        logging.error(f"{{action: {Event.PersonQuery_Error}, Target: {fname, lname}, NumResults: {numresults}}}")
+        logging.error(f"{{Event: {Event.PersonQuery_Error}, Target: {fname, lname}, NumResults: {numresults}}}")
         return "Unable to process query"
 
-# Queries newsfeed sources based on provided keyword and returns a specified number of results
+# Queries newsfeed sources from a given month/year based on provided keyword and returns a specified number of results
 # @param<numresults> The number of results to return 
 # @param<year> the year in which articles of interest would be published
 # @param<month> the month in which articles of interest would be published
 # @param<keywords> the keyword(s) to search
 # @return A JSON object containing the results of the query
 def historical_query(numresults, year, month, *keywords):
-    logging.info(f"{{action: {Event.HistQuery_Initiated}, Target: {year, month, keywords}, NumResults: {numresults}}}")
+    logging.info(f"{{Event: {Event.HistQuery_Initiated}, Target: {year, month, keywords}, NumResults: {numresults}}}")
     try:
         # Insert call to keyword_query helper
-        logging.info(f"{{action: {Event.HistQuery_Success}, Target: {year, month, keywords}, NumResults: {numresults}}}")
+        logging.info(f"{{Event: {Event.HistQuery_Success}, Target: {year, month, keywords}, NumResults: {numresults}}}")
         return 'results'
     except:
-        logging.error(f"{{action: {Event.HistQuery_Error}, Target: {year, month, keywords}, NumResults: {numresults}}}")
+        logging.error(f"{{Event: {Event.HistQuery_Error}, Target: {year, month, keywords}, NumResults: {numresults}}}")
         return "Unable to process query"
 
 
