@@ -6,6 +6,8 @@ The file uploader module provides an API to securely upload a file into the data
     - As a journalist, I want a way to securely upload a file into a database and subsequently be able to access, modify, and delete specific components of the file
 
 - **Developers**
+    - As a developer, I want a simple API to upload, access, modify, and delete files in a database
+    - As a developer, I want access to log-level information on each method for debugging and system analysis purposes
 
 ## API Details
 (Note: exact format of params to be fed into each method are TBD -- further API documentation to be provided with implementation)
@@ -27,6 +29,6 @@ The file uploader module provides an API to securely upload a file into the data
 
 ## Internal Details
 Below are a few internal details of the API stub implementation in response to requirements for this phase:
-- Status: Currently, the create, update, and delete methods return a message indicating whether the request was successful or failed (in the future, this could be an HTTP status, eg 200 OK or 404 )
-- Events: The _fileuploader_events class defines a set of events related to the methods for this module. These events are logged (see logging below)
-- Logging: A rudimentary logging system has been implemented to report each time a method is called and its result. The format of the log messages is as follows: < date/time > < type (eg, info or error) > < {Event: < specific event, eg Upload_Success >, Target: < specific file and components >}>
+- **Status:** Currently, the create, update, and delete methods return a message indicating whether the request was successful or failed (in the future, this could be an HTTP status, eg 200 OK or 404 )
+- **Events:** The _fileuploader_events class defines a set of events related to the methods for this module. These events are logged (see logging below)
+- **Logging:** A rudimentary logging system has been implemented to report each time a method is called and its result. The format of the log messages is as follows: < date/time > < type (eg, info or error) > < {Event: < specific event, eg Upload_Success >, Target: < specific file and components >}>
