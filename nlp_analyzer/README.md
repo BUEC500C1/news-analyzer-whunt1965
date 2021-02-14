@@ -11,6 +11,9 @@ The nlp analyzer module provides an API to perform sentiment, enity, and syntax 
     - As a developer, I want a simple API to perform sentiment and entity analysis on a text either as a deliverable to an end-user or as part of my application for understanding user input.
     - As a developer, I want to be able to use syntax analysis to break down user input in order to determine what actions to perform in my application. 
     - As a developer, I want access to log-level information on each method for debugging and system analysis purposes
+    
+## Build Instructions
+This API can be utilized by simply cloning the repo (using git clone) and then using import nlp_analyzer in whichever file needs to access the API.
 
 ## API Details
 (Note: exact format of params to be fed into each method are TBD -- further API documentation to be provided with implementation)
