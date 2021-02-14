@@ -9,6 +9,9 @@ The file uploader module provides an API to securely upload a file into the data
     - As a developer, I want a simple API to upload, access, modify, and delete files in a database
     - As a developer, I want access to log-level information on each method for debugging and system analysis purposes
 
+## Build Instructions
+This API can be utilized by simply cloning the repo (using git clone) and then using import file_uploader in whichever file needs to access the API.
+
 ## API Details
 (Note: exact format of params to be fed into each method are TBD -- further API documentation to be provided with implementation)
 - create(File file): Allows a user to upload a file into the database
