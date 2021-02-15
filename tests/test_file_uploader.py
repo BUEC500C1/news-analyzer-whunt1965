@@ -1,5 +1,6 @@
 # Tests for file uploader module
 from memory_profiler import profile
+from file_uploader.fileuploader import *
 import tracemalloc
 import cProfile
 import re
@@ -9,10 +10,25 @@ import re
 # Start Tests
 # ==================
 
-# Dummy test to test workflow
+# Post Tests
 @profile
-def test_placeholder():
-    assert "helloworld" == "helloworld"
+def test_post():
+    assert post("nonsense") == 'File Successfully Uploaded'
+
+# Get Tests
+@profile
+def test_get():
+    assert get("nonsense") == '<Results...>'
+
+# Put Tests
+@profile
+def test_put():
+    assert put("nonsense") == 'Update Successful'
+
+# Delete Tests
+@profile
+def test_delete():
+    assert delete("nonsense") == 'Deletion Successful'
 
 # ==================
 # Ends Tests
@@ -29,7 +45,10 @@ def printTitle():
 def main():
     printTitle()
     tracemalloc.start()# Start trace malloc
-    test_placeholder()  
+    test_post()
+    test_get()
+    test_put()
+    test_delete()  
 
     # Get snapshot
     snapshot = tracemalloc.take_snapshot()
