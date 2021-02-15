@@ -1,6 +1,6 @@
 # Tests for file uploader module
 from memory_profiler import profile
-from ..file_uploader.fileuploader import *
+from file_uploader import fileuploader as fu
 import tracemalloc
 import cProfile
 import re
@@ -13,22 +13,22 @@ import re
 # Post Tests
 @profile
 def test_post():
-    assert post("nonsense") == 'File Successfully Uploaded'
+    assert fu.post("nonsense") == 'File Successfully Uploaded'
 
 # Get Tests
 @profile
 def test_get():
-    assert get("nonsense") == '<Results...>'
+    assert fu.get("nonsense") == '<Results...>'
 
 # Put Tests
 @profile
 def test_put():
-    assert put("nonsense") == 'Update Successful'
+    assert fu.put("nonsense") == 'Update Successful'
 
 # Delete Tests
 @profile
 def test_delete():
-    assert delete("nonsense") == 'Deletion Successful'
+    assert fu.delete("nonsense") == 'Deletion Successful'
 
 # ==================
 # Ends Tests
