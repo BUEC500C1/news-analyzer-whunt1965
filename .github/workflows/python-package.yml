@@ -42,6 +42,4 @@ jobs:
         coverage report -m
     - name: Detailed MEM and CPU Usage
       run: |
-        python3 tests/test_file_uploader.py
-        python3 tests/test_newsfeed_ingester.py
-        python3 tests/test_nlp_analyzer.py
+        pytest --capture=tee-sys 
