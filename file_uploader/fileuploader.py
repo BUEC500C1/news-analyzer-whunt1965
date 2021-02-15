@@ -3,7 +3,7 @@
 # ======================================================
 import logging
 import sys
-from _fileuploader_events import *
+from ._fileuploader_events import *
 
 #Init logger
 logger = logging.getLogger(__name__) #set module level logger
