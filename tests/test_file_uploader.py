@@ -34,9 +34,9 @@ def test_delete():
 # Ends Tests
 # ==================
 
-#Included to show output from CPU and mem usage
-def test_main():
-    main()
+# #Included to show output from CPU and mem usage
+# def test_main():
+#     main()
 
 #Print header for report
 def printTitle():
