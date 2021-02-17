@@ -124,7 +124,7 @@ def test_read():
     l_valid = json.dumps(valid)
     l_invalid = json.dumps(invalid)
 
-    #Read full File
+    #Read full File - Expect fail for now... until DB
     assert read(l_full_file) == (l_valid, "200 OK")
     #Read Invalid File (no ID key)
     assert read(l_invalid_file) == (l_invalid_file, "404 Not Found")
