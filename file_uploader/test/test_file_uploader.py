@@ -11,12 +11,12 @@ import json
 # Start Tests
 # ==================
 valid = {
-    'ID':'/File/12/123',
-    'Upload_Date':'2021-02-17',
-    'File_Metadata': {
+    "ID":"/File/12/123",
+    "Upload_Date":"2021-02-17",
+    "File_Metadata": {
         "Authors":["Osama"],
-        "File_Creation_Date": '1999-01-22',
-        "File_Source": 'Wiley',
+        "File_Creation_Date": "1999-01-22",
+        "File_Source": "Wiley",
         "File_Tags": ["Sports"],
     },
     "Text": {
@@ -29,28 +29,28 @@ valid = {
 }
 
 partial_valid_for_Read_and_Delete  = {
-    'ID':'/File/12/123',
+    "ID":"/File/12/123",
     "Text": {},
 }
 
 update_valid  = {
-    'ID':'/File/12/123',
+    "ID":"/File/12/123",
     "Text": {
         "Text": ["New Stuff!", "and more new stuff!"]
     },
 }
 
 expected_update_valid_output = {
-    'ID':'/File/12/123',
-    'Upload_Date':'2021-02-17',
-    'File_Metadata': {
+    "ID":"/File/12/123",
+    "Upload_Date":"2021-02-17",
+    "File_Metadata": {
         "Authors":["Osama"],
-        "File_Creation_Date": '1999-01-22',
+        "File_Creation_Date": "1999-01-22",
         "File_Source": 'Wiley',
         "File_Tags": ["Sports"],
     },
     "Text": {
-        "Text_ID": '/File/12/123/456',
+        "Text_ID": "/File/12/123/456",
         "Text":["Stuff", "and more new stuff"],
         "Sentiment": [],
         "Entity": [],
@@ -59,7 +59,7 @@ expected_update_valid_output = {
 }
 
 expected_partial_read_output = {
-        "Text_ID": '/File/12/123/456',
+        "Text_ID": "/File/12/123/456",
         "Text":["Hello, this is a test", "Its not a very good test"],
         "Sentiment": [0, -10],
         "Entity": [],
@@ -67,16 +67,16 @@ expected_partial_read_output = {
 }
 
 expected_partial_delete_output = {
-    'ID':'/File/12/123',
-    'Upload_Date':'2021-02-17',
-    'File_Metadata': {
+    "ID":"/File/12/123",
+    "Upload_Date":"2021-02-17",
+    "File_Metadata": {
         "Authors":["Osama"],
-        "File_Creation_Date": '1999-01-22',
-        "File_Source": 'Wiley',
+        "File_Creation_Date": "1999-01-22",
+        "File_Source": "Wiley",
         "File_Tags": ["Sports"],
     },
     "Text": {
-        "Text_ID": '',
+        "Text_ID": "",
         "Text":[],
         "Sentiment": [],
         "Entity": [],
@@ -86,12 +86,12 @@ expected_partial_delete_output = {
 
 
 invalid = {
-    'ID':'',
-    'Upload_Date':'2021-02-17',
-    'File_Metadata': {
+    "ID":'',
+    "Upload_Date":"2021-02-17",
+    "File_Metadata": {
         "Authors":["Osama"],
-        "File_Creation_Date": '1999-01-22',
-        "File_Source": 'Wiley',
+        "File_Creation_Date": "1999-01-22",
+        "File_Source": "Wiley",
         "File_Tags": ["Sports"],
     },
     "Text": {
@@ -115,9 +115,9 @@ def test_create():
 
 # @profile
 def test_read():
-    full_file = {'ID':'/File/12/123'}
+    full_file = {"ID":"/File/12/123"}
     l_full_file = json.dumps(full_file)
-    invalid_file = {'ID':''}
+    invalid_file = {"ID":""}
     l_invalid_file = json.dumps(invalid_file)
     l_expected_partial_read_output = json.dumps(expected_partial_read_output)
     l_partial_valid_for_Read_and_Delete = json.dumps(partial_valid_for_Read_and_Delete)
@@ -136,7 +136,7 @@ def test_update():
     l_update_valid = json.dumps(update_valid)
     l_expected_update_valid_output = json.dumps(expected_update_valid_output)
 
-    invalidupdate = {'ID':'/File/12/123', 'Hat': 22}
+    invalidupdate = {"ID":"/File/12/123", "Hat": 22}
     l_invalidupdate = json.dumps(invalidupdate)
     #Valid update, expect to fail until impl
     assert update(l_update_valid) == (l_expected_update_valid_output, "200 OK")
@@ -147,7 +147,7 @@ def test_update():
 def test_delete():
     l_partial_valid_for_Read_and_Delete = json.dumps(partial_valid_for_Read_and_Delete)
     l_expected_partial_delete_output = json.dumps(partial_valid_for_Read_and_Delete)
-    invalid_delete = {'Text': 1234}
+    invalid_delete = {"Text": 1234}
     l_invalid_delete = json.dumps(invalid_delete)
 
     #Valid delete -- expect fail until implementation
