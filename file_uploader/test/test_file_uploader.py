@@ -109,9 +109,9 @@ def test_create():
     l_valid = json.dumps(valid)
     l_invalid = json.dumps(invalid)
     #Correct Create
-    assert create(valid) == (l_valid, "200 OK")
+    assert create(l_valid) == (l_valid, "200 OK")
     #Invalid Create (no ID)
-    assert create(invalid) == (l_valid, "404 Not Found")
+    assert create(l_invalid) == (l_valid, "404 Not Found")
 
 # @profile
 def test_read():
