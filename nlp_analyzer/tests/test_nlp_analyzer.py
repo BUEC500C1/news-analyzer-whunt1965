@@ -14,43 +14,60 @@ from nlpanalyzer import *
 @profile
 def test_analyze_sent():
 
-    #Valid Test
+    #Valid Tests
     j = analyze_sentiment("text")
     assert type(j) is int
+    j = analyze_sentiment("more text")
+    assert type(j) is int
 
-    #Failure Test
+    #Failure Tests
     k = analyze_sentiment(7)
+    assert k == ""
+    k = analyze_sentiment([])
     assert k == ""
 
 @profile
 def test_analyze_ent():
 
-    #Success Test
+    #Success Tests
     j = analyze_entity("John Doe is Great")
     assert type(j) is list
+    j = analyze_entity("I love Nascar")
+    assert type(j) is list
 
-     #Failure Test
+     #Failure Tests
     k = analyze_entity(7)
+    assert k == []
+    k = analyze_entity(None)
     assert k == []
 
 @profile
 def test_analyze_ent_sent():
-    #Success Test
+
+    #Success Tests
     j = analyze_entity_sentiment("John Doe is Great")
     assert type(j) is list
+    j = analyze_entity_sentiment("Denzel Washington is awful")
+    assert type(j) is list
 
-     #Failure Test
-    k = analyze_entity(7)
+     #Failure Tests
+    k = analyze_entity_sentiment(7)
+    assert k == []
+    k = analyze_entity_sentiment({"Hello"})
     assert k == []
 
 @profile
 def test_classify_content():
-    #Success Test
+    #Success Tests
     j = classify_content("John Doe is Great")
+    assert type(j) is dict
+    j = classify_content("Tractors, Tractors, Tractors")
     assert type(j) is dict
 
      #Failure Test
-    k = classify_content(7)
+    k = classify_content(None)
+    assert k == {}
+    k = classify_content(16)
     assert k == {}
 
 # ==================
@@ -74,7 +91,7 @@ def main():
     test_analyze_sent()
     test_analyze_ent()
     test_analyze_ent_sent()
-    test_analyze_ent_sent()  
+    test_classify_content()  
 
     # Get snapshot
     snapshot = tracemalloc.take_snapshot()
