@@ -105,7 +105,7 @@ invalid = {
 
 #Create Tests
 # @profile
-def test_create(valid, invalid):
+def test_create():
     l_valid = json.dumps(valid)
     l_invalid = json.dumps(invalid)
     #Correct Create
@@ -114,7 +114,7 @@ def test_create(valid, invalid):
     assert create(invalid) == (l_valid, "404 Not Found")
 
 # @profile
-def test_read(valid, partial_valid_for_Read_and_Delete, expected_partial_read_output ):
+def test_read():
     full_file = {'ID':'/File/12/123'}
     l_full_file = json.dumps(full_file)
     invalid_file = {'ID':''}
@@ -132,7 +132,7 @@ def test_read(valid, partial_valid_for_Read_and_Delete, expected_partial_read_ou
     assert read(l_partial_valid_for_Read_and_Delete) == (l_expected_partial_read_output, "200 OK")
 
 # @profile
-def test_update(update_valid, expected_update_valid_output):
+def test_update():
     l_update_valid = json.dumps(update_valid)
     l_expected_update_valid_output = json.dumps(expected_update_valid_output)
 
@@ -144,7 +144,7 @@ def test_update(update_valid, expected_update_valid_output):
     assert update(l_invalidupdate) == (l_invalidupdate, "404 Not Found")
 
 # @profile
-def test_delete(partial_valid_for_Read_and_Delete, expected_partial_delete_output):
+def test_delete():
     l_partial_valid_for_Read_and_Delete = json.dumps(partial_valid_for_Read_and_Delete)
     l_expected_partial_delete_output = json.dumps(partial_valid_for_Read_and_Delete)
     invalid_delete = {'Text': 1234}
