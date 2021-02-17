@@ -44,7 +44,7 @@ def test_analyze_ent_sent():
     assert k == []
 
 @profile
-def classify_content():
+def test_classify_content():
     #Success Test
     j = classify_content("John Doe is Great")
     assert type(j) is dict
@@ -57,6 +57,9 @@ def classify_content():
 # Ends Tests
 # ==================
 
+#Included to show output from CPU and mem usage
+def test_main():
+    main()
 
 #Print header for report
 def printTitle():
@@ -68,7 +71,10 @@ def printTitle():
 def main():
     printTitle()
     tracemalloc.start()# Start trace malloc
-    test_placeholder()  
+    test_analyze_sent()
+    test_analyze_ent()
+    test_analyze_ent_sent()
+    test_analyze_ent_sent()  
 
     # Get snapshot
     snapshot = tracemalloc.take_snapshot()

@@ -167,8 +167,8 @@ def test_delete():
 # ==================
 
 # #Included to show output from CPU and mem usage
-# def test_main():
-#     main()
+def test_main():
+    main()
 
 #Print header for report
 def printTitle():
@@ -180,7 +180,10 @@ def printTitle():
 def main():
     printTitle()
     tracemalloc.start()# Start trace malloc
-
+    test_create()
+    test_read()
+    test_update()
+    test_delete()
 
     # Get snapshot
     snapshot = tracemalloc.take_snapshot()
