@@ -29,6 +29,7 @@ All functions require a JSON input of the following format (Note: a subset of th
            "Sentiment":[< Paragraph1_Sentiment >, ...],
            "Entity":[< Paragraph1_Entity >, ...],
            "Entity_Sentiment":[< Paragraph1_Entity_Sentiment >, ...],
+           "Content_Classification":[< Paragraph1_Content_Class >, ...],
         },
    }
 </pre>

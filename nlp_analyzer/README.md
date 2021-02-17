@@ -19,19 +19,16 @@ This API can be utilized by simply cloning the repo (using git clone) and then u
 (Note: exact format of params to be fed into each method are TBD -- further API documentation to be provided with implementation)
 - analyze_sentiment(String text): Performs sentiment analysis on a given text
     - @param< text > A text string on which to perform sentiment analysis
-    - @return A sentiment score on the provided text (or an error message indicating the analysis failed)
+    - @return A sentiment score on the provided text (or an empty string if failed)
 - analyze_entity(String text): Performs sentiment analysis on a given text
     - @param< text > A text string on which to perform entity analysis
-    - @return A list of entities extracted from the text (or an error message indicating the analysis failed)
-- analyze_syntax(String text): Performs syntax analysis on a given text
-    - @param< text > A text string on which to perform syntax analysis
-    - @return The results of the syntactic analysis (parts of speech, etc) (or an error message indicating the analysis failed)
+    - @return A list of entities extracted from the text (or an empty list if failed)
 - analyze_entity_sentiment(String text): Performs sentiment analysis on entities extracted from a given text
     - @param< text > The text on which to perform entity-sentiment analysis
-    - @return The entities (and associated sentiments) extracted from the text (or an error message indicating the analysis failed)
+    - @return A list of entitities (and associated scores) from the inputted text (or an empty list if failed)
 - classify_content(String text): Performs content classification on a given text
     - @param< text > The text on which to perform content classification 
-    - @return A list of content categories that are found in the provided text
+    - @return A dictionary of content categories (with associated confidence) that are found in the provided text (or an empty dictionary if failed)
 
 ## Internal Details
 Below are a few internal details of the API stub implementation in response to requirements for this phase:

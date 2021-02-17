@@ -11,15 +11,12 @@ class Event(Enum):
     AnalyzeEntity_Initiated = 4
     AnalyzeEntity_Success = 5
     AnalyzeEntity_Error = 6
-    AnalyzeSyntax_Initiated = 7
-    AnalyzeSyntax_Success = 8
-    AnalyzeSyntax_Error = 9
-    AnalyzeEntitySentiment_Initiated = 10
-    AnalyzeEntitySentiment_Success = 11
-    AnalyzeEntitySentiment_Error = 12
-    ClassifyContent_Initiated = 13
-    ClassifyContent_Success = 14
-    ClassifyContent_Error = 15
+    AnalyzeEntitySentiment_Initiated = 7
+    AnalyzeEntitySentiment_Success = 8
+    AnalyzeEntitySentiment_Error = 9
+    ClassifyContent_Initiated = 10
+    ClassifyContent_Success = 11
+    ClassifyContent_Error = 12
 
     # Class to-string method to support logging
     def __str__(self):

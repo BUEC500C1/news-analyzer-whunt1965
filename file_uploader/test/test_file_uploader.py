@@ -25,6 +25,7 @@ valid = {
         "Sentiment": [0, -10],
         "Entity": [],
         "Entity_Sentiment": [],
+        "Content_Classification": [],
     },
 }
 
@@ -55,6 +56,7 @@ expected_update_valid_output = {
         "Sentiment": [],
         "Entity": [],
         "Entity_Sentiment": [],
+        "Content_Classification": [],
     },
 }
 
@@ -64,6 +66,7 @@ expected_partial_read_output = {
         "Sentiment": [0, -10],
         "Entity": [],
         "Entity_Sentiment": [],
+        "Content_Classification": [],
 }
 
 expected_partial_delete_output = {
@@ -81,6 +84,7 @@ expected_partial_delete_output = {
         "Sentiment": [],
         "Entity": [],
         "Entity_Sentiment": [],
+        "Content_Classification": [],
     },
 }
 
@@ -100,6 +104,7 @@ invalid = {
         "Sentiment": [0, -10],
         "Entity": [],
         "Entity_Sentiment": [],
+        "Content_Classification": [],
     },
 }
 
