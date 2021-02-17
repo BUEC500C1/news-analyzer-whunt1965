@@ -50,7 +50,7 @@ def test_classify_content():
     assert type(j) is dict
 
      #Failure Test
-    k = analyze_entity(7)
+    k = classify_content(7)
     assert k == {}
 
 # ==================
