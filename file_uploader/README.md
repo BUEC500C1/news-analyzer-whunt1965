@@ -17,10 +17,10 @@ All functions require a JSON input of the following format (Note: a subset of th
 <pre>
    {
        "ID":/File/< File_ID >/< User_ID >, 
-       "Upload_Date_Time":< date_time(ISO format) >, 
+       "Upload_Date":< YYYY-MM-DD >, 
        "File_Metadata":{
            "Authors":[< author1 >,...], 
-           "File_Creation_Date_Time":< date_time(ISO format) >, 
+           "File_Creation_Date":< YYYY-MM-DD >, 
            "File_Source":< file_source >, "File_Tags":[< Tag1 >,...]
         }, 
        "Text":{
