@@ -17,17 +17,14 @@ This API can be utilized by simply cloning the repo (using git clone) and then u
 
 ## API Details
 (Note: exact format of params to be fed into each method are TBD -- further API documentation to be provided with implementation)
-- keyword_query(int numresults, List keywords): Queries newsfeed sources based on provided keyword and returns a specified number of results
-    - @param< numresults > The number of results to return
+- keyword_query(List keywords): Queries newsfeed sources based on provided keyword(s) 
     - @param<*keywords> a list of keyword(s) for the query 
-    - @return A JSON object containing the results of the query including article names, summary, and link to article (or an error message indicating the analysis failed)
-- person_query(int numresults, String year, String month, list keywords): Queries newsfeed sources based on provided first/last name and returns a specified number of results
-    - @param< numresults > The number of results to return
+    - @return A JSON object containing a list of articles, including article title, URL, and summary. If the query is not successful, returns an empty JSON
+- person_query(String year, String month, list keywords): Queries newsfeed sources based on provided first/last name 
     - @param< fname > the first name of the person to query
     - @param< lname > the last name of the person to query
-    - @return A JSON object containing the results of the query including article names, summary, and link to article (or an error message indicating the analysis failed)
-- historical_query(int numresults, String firstname, String lastname): Queries newsfeed sources from a given month/year based on provided keyword and returns a specified number of results
-    - @param< numresults > The number of results to return
+    - @return A JSON object containing a list of articles, including article title, URL, and summary. If the query is not successful, returns an empty JSON
+- historical_query(String firstname, String lastname): Queries newsfeed sources from a given month/year based on provided keyword
     - @param< year > the year in which articles of interest would be published
     - @param< month > the month in which articles of interest would be published
     - @param< keywords > the list of keyword(s) to search
@@ -37,4 +34,4 @@ This API can be utilized by simply cloning the repo (using git clone) and then u
 Below are a few internal details of the API stub implementation in response to requirements for this phase:
 - **Status:** Currently, all methods either return the result of the operation or a failure message. Depending on implementation, it may also be worthwhile to explore adding some sort of "Processing" (or other status) message given that fetching results may take a while
 - **Events:** The _newsfeedingester_events class defines a set of events related to the methods for this module. These events are logged (see logging below)
-- **Logging:** A rudimentary logging system has been implemented to report each time a method is called and its result. The format of the log messages is as follows: < date/time > < type (eg, info or error) > < {Event: < specific event, eg PersonQuery_Success >, Target: < query seach parameters (eg keywords) > NumResults: < the number of results asked for in the query> }>
+- **Logging:** A rudimentary logging system has been implemented to report each time a method is called and its result. The format of the log messages is as follows: < date/time > < type (eg, info or error) > < {Event: < specific event, eg PersonQuery_Success >, Target: < query search parameters (eg keywords) > }>

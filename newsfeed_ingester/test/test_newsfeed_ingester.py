@@ -77,7 +77,9 @@ def printTitle():
 def main():
     printTitle()
     tracemalloc.start()# Start trace malloc
-    test_placeholder()  
+    test_keyword_query()
+    test_person_query()
+    test_historical_query() 
 
     # Get snapshot
     snapshot = tracemalloc.take_snapshot()
