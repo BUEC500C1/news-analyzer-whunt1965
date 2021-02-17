@@ -36,7 +36,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        coverage run -m pytest --pyargs file_uploader --import-mode=importlib
+        coverage run -m python -m pytest --pyargs file_uploader --import-mode=importlib
     - name: Show coverage report
       run: |
         coverage report -m
