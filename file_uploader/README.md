@@ -16,19 +16,19 @@ This API can be utilized by simply cloning the repo (using git clone) and then u
 All functions require a JSON input of the following format (Note: a subset of these fields may only need specification as outlined in the function documentation  below):
 <pre>
    {
-       "ID":/File/<File_ID>/<User_ID>, 
-       "Upload_Date_Time":<date_time(ISO format)>, 
+       "ID":/File/< File_ID >/< User_ID >, 
+       "Upload_Date_Time":< date_time(ISO format) >, 
        "File_Metadata":{
-           "Authors":[<author1>,...], 
-           "File_Creation_Date_Time":<date_time(ISO format)>, 
-           "File_Source":<file_source>, "File_Tags":[<Tag1>,...]
+           "Authors":[< author1 >,...], 
+           "File_Creation_Date_Time":< date_time(ISO format) >, 
+           "File_Source":< file_source >, "File_Tags":[< Tag1 >,...]
         }, 
        "Text":{
-           "Text_ID": /File/<File_ID>/<User_ID>/<Text_ID>,
-           "Text":[<Paragraph1>, ...],
-           "Sentiment":[<Paragraph1_Sentiment>, ...],
-           "Entity":[<Paragraph1_Entity>, ...],
-           "Entity_Sentiment":[<Paragraph1_Entity_Sentiment>, ...],
+           "Text_ID": /File/< File_ID >/< User_ID >/< Text_ID >,
+           "Text":[< Paragraph1 >, ...],
+           "Sentiment":[< Paragraph1_Sentiment >, ...],
+           "Entity":[< Paragraph1_Entity >, ...],
+           "Entity_Sentiment":[< Paragraph1_Entity_Sentiment >, ...],
         },
    }
 </pre>
