@@ -14,6 +14,7 @@ This API can be utilized by simply cloning the repo (using git clone) and then u
 
 ## API Details
 All functions require a JSON input of the following format (Note: a subset of these fields may only need specification as outlined in the function documentation  below):
+<pre>
    {
        "ID":/File/<File_ID>/<User_ID>, 
        "Upload_Date_Time":<date_time(ISO format)>, 
@@ -30,7 +31,7 @@ All functions require a JSON input of the following format (Note: a subset of th
            "Entity_Sentiment":[<Paragraph1_Entity_Sentiment>, ...],
         },
    }
-
+</pre>
 - create(JSON fileObject): Uploads a file and creates an entry in the Database
     - @param< JSON fileObject > A JSON file object containing all fields specified in the above format
     - @return The JSON object along with a reponse code indeicating success or failure
