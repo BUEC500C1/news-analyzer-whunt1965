@@ -1,6 +1,6 @@
 # Tests for file uploader module
 from memory_profiler import profile
-from ..fileuploader import *
+from fileuploader import *
 import tracemalloc
 import cProfile
 import re
