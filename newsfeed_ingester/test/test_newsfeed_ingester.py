@@ -37,7 +37,7 @@ def test_person_query():
     #Valid Tests
     Result = json.loads(person_query("Osama", "Alshaykh"))
     assert type(Result) == list
-    Result = json.loads(person_query("Javier Bardim"))
+    Result = json.loads(person_query("Javier", "Bardim"))
     assert type(Result) == list
 
     #Invalid Test

@@ -145,7 +145,9 @@ def test_update():
     l_invalidupdate = json.dumps(invalidupdate)
     #Valid update, expect to fail until impl
     assert update(l_update_valid) == (l_expected_update_valid_output, "200 OK")
-    
+
+    invalidupdate = {"ID":"/File/12/123", "Hat": 22}
+    l_invalidupdate = json.dumps(invalidupdate)
     #Invalid update, expect fail until implement db
     assert update(l_invalidupdate) == (l_invalidupdate, "404 Not Found")
 
@@ -160,7 +162,7 @@ def test_delete():
     assert delete(l_partial_valid_for_Read_and_Delete) == (l_expected_partial_delete_output, "200 OK")
     valid_delete= {"File_ID": "/File/123/1234"}
     l_invalid_delete = json.dumps(invalid_delete)
-    valid_delete_out = json.loads({})
+    valid_delete_out = json.dumps({})
     assert delete(l_partial_valid_for_Read_and_Delete) == (valid_delete_out, "200 OK")
     #Invalid Deletes - Should work for now
     assert delete(l_invalid_delete) == (l_invalid_delete, "404 Not Found")
