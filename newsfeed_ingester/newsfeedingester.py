@@ -36,7 +36,7 @@ def keyword_query(*keywords):
 def person_query(fname, lname):
     logging.info(f"{{Event: {Event.PersonQuery_Initiated}, Target: {fname, lname}}}")
     if type(fname) != str or type(lname) != str:
-        logging.error(f"{{Event: {Event.KWordQuery_Error}, Target: {keywords}}}")
+        logging.error(f"{{Event: {Event.PersonQuery_Error}, Target: {fname, lname}}}")
         ret = []
         ret = json.dumps(ret)
         return ret
