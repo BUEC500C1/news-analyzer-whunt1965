@@ -17,7 +17,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='%(asctime)s 
 # @return A JSON object containing a list of articles, including article title, URL, and summary. If the query is not successful, returns an empty JSON
 def keyword_query(*keywords):
     logging.info(f"{{Event: {Event.KWordQuery_Initiated}, Target: {keywords}}}")
-    if keywords == None:
+    if keywords == None or type(keywords) != list:
         logging.error(f"{{Event: {Event.KWordQuery_Error}, Target: {keywords}}}")
         ret = []
         ret = json.dumps(ret)
