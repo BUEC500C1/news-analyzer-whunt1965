@@ -4,6 +4,7 @@ The file uploader module provides an API to securely upload a file into the data
 ## User Stories
 - **End User (journalists):**
     - As a journalist, I want a way to securely upload a file into a database and subsequently be able to access, modify, and delete specific components of the file
+    - As a journalist, I an easy means to extract text and other data from a file which I previously uploaded.
 
 - **Developers**
     - As a developer, I want a simple API to upload, access, modify, and delete files in a database
