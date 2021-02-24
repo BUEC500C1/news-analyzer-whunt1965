@@ -5,7 +5,7 @@
 import logging
 import sys
 import json
-import _fileuploader_events as ev
+from file_uploader import _fileuploader_events as ev
 
 #Init logger
 logger = logging.getLogger(__name__) #set module level logger

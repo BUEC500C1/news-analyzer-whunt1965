@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_restful import Resource, Api
-import fileuploader as fu
+from file_uploader import fileuploader as fu
 
 app = Flask(__name__)
 api = Api(app)

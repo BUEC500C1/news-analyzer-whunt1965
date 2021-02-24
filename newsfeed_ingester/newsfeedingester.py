@@ -3,7 +3,7 @@
 # ======================================================
 import logging
 import sys
-from _newsfeedingester_events import *
+from newsfeed_ingester import _newsfeedingester_events as ev
 import json
 
 #Init logger
@@ -16,15 +16,15 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='%(asctime)s 
 # @param<keywords> a list of keyword(s) for the query
 # @return A JSON object containing a list of articles, including article title, URL, and summary. If the query is not successful, returns an empty JSON
 def keyword_query(keywords):
-    logging.info(f"{{Event: {Event.KWordQuery_Initiated}, Target: {keywords}}}")
+    logging.info(f"{{Event: {ev.Event.KWordQuery_Initiated}, Target: {keywords}}}")
     if keywords == None or type(keywords) != list:
-        logging.error(f"{{Event: {Event.KWordQuery_Error}, Target: {keywords}}}")
+        logging.error(f"{{Event: {ev.Event.KWordQuery_Error}, Target: {keywords}}}")
         ret = []
         ret = json.dumps(ret)
         return ret
     else:
         # Insert call to keyword_query helper
-        logging.info(f"{{Event: {Event.KWordQuery_Success}, Target: {keywords}}}")
+        logging.info(f"{{Event: {ev.Event.KWordQuery_Success}, Target: {keywords}}}")
         hardcoded_ret = [{"Title":"Article", "URL":"fake@fakenews.com", "Summary":"This, in fact, is a fake article"}]
         ret = json.dumps(hardcoded_ret)
         return ret
@@ -33,15 +33,15 @@ def keyword_query(keywords):
 # @param<name> the name (first last, separated by a space) of the person to query
 # @return A JSON object containing a list of articles, including article title, URL, and summary. If the query is not successful, returns an empty JSON
 def person_query(name):
-    logging.info(f"{{Event: {Event.PersonQuery_Initiated}, Target: {fname, lname}}}")
-    if type(fname) != str or type(lname) != str:
-        logging.error(f"{{Event: {Event.PersonQuery_Error}, Target: {fname, lname}}}")
+    logging.info(f"{{Event: {ev.Event.PersonQuery_Initiated}, Target: {name}}}")
+    if type(name) != str:
+        logging.error(f"{{Event: {ev.Event.PersonQuery_Error}, Target: {name}}}")
         ret = []
         ret = json.dumps(ret)
         return ret
     else:
         # Insert call to keyword_query helper
-        logging.info(f"{{Event: {Event.PersonQuery_Success}, Target: {fname, lname}}}")
+        logging.info(f"{{Event: {ev.Event.PersonQuery_Success}, Target: {name}}}")
         hardcoded_ret = [{"Title":"Article", "URL":"fake@fakenews.com", "Summary":"This, in fact, is a fake article"}]
         ret = json.dumps(hardcoded_ret)
         return ret
@@ -52,15 +52,15 @@ def person_query(name):
 # @param<keywords> a list of keyword(s) to search
 # @return A JSON object containing a list of articles, including article title, URL, and summary. If the query is not successful, returns an empty JSON
 def historical_query(year, month, keywords):
-    logging.info(f"{{Event: {Event.HistQuery_Initiated}, Target: {year, month, keywords}}}")
+    logging.info(f"{{Event: {ev.Event.HistQuery_Initiated}, Target: {year, month, keywords}}}")
     if type(year) != str or type(month) != str or keywords == None:
-        logging.error(f"{{Event: {Event.HistQuery_Error}, Target: {year, month, keywords}}}")
+        logging.error(f"{{Event: {ev.Event.HistQuery_Error}, Target: {year, month, keywords}}}")
         ret = []
         ret = json.dumps(ret)
         return ret
     else:
         # Insert call to keyword_query helper
-        logging.info(f"{{Event: {Event.HistQuery_Success}, Target: {year, month, keywords}}}")
+        logging.info(f"{{Event: {ev.Event.HistQuery_Success}, Target: {year, month, keywords}}}")
         hardcoded_ret = [{"Title":"Article", "URL":"fake@fakenews.com", "Summary":"This, in fact, is a fake article"}]
         ret = json.dumps(hardcoded_ret)
         return ret
