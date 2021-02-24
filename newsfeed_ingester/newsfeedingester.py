@@ -13,9 +13,9 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='%(asctime)s 
 
 
 # Queries newsfeed sources based on provided keyword(s) 
-# @param<*keywords> a list of keyword(s) for the query
+# @param<keywords> a list of keyword(s) for the query
 # @return A JSON object containing a list of articles, including article title, URL, and summary. If the query is not successful, returns an empty JSON
-def keyword_query(*keywords):
+def keyword_query(keywords):
     logging.info(f"{{Event: {Event.KWordQuery_Initiated}, Target: {keywords}}}")
     if keywords == None or type(keywords) != list:
         logging.error(f"{{Event: {Event.KWordQuery_Error}, Target: {keywords}}}")
@@ -30,10 +30,9 @@ def keyword_query(*keywords):
         return ret
 
 # Queries newsfeed sources based on provided first/last name 
-# @param<fname> the first name of the person to query
-# @param<lname> the last name of the person to query
+# @param<name> the name (first last, separated by a space) of the person to query
 # @return A JSON object containing a list of articles, including article title, URL, and summary. If the query is not successful, returns an empty JSON
-def person_query(fname, lname):
+def person_query(name):
     logging.info(f"{{Event: {Event.PersonQuery_Initiated}, Target: {fname, lname}}}")
     if type(fname) != str or type(lname) != str:
         logging.error(f"{{Event: {Event.PersonQuery_Error}, Target: {fname, lname}}}")
@@ -50,9 +49,9 @@ def person_query(fname, lname):
 # Queries newsfeed sources from a given month/year based on provided keyword
 # @param<year> the year in which articles of interest would be published
 # @param<month> the month in which articles of interest would be published
-# @param<keywords> the keyword(s) to search
+# @param<keywords> a list of keyword(s) to search
 # @return A JSON object containing a list of articles, including article title, URL, and summary. If the query is not successful, returns an empty JSON
-def historical_query(year, month, *keywords):
+def historical_query(year, month, keywords):
     logging.info(f"{{Event: {Event.HistQuery_Initiated}, Target: {year, month, keywords}}}")
     if type(year) != str or type(month) != str or keywords == None:
         logging.error(f"{{Event: {Event.HistQuery_Error}, Target: {year, month, keywords}}}")

@@ -18,11 +18,10 @@ This API can be utilized by simply cloning the repo (using git clone) and then u
 ## API Details
 (Note: exact format of params to be fed into each method are TBD -- further API documentation to be provided with implementation)
 - keyword_query(List keywords): Queries newsfeed sources based on provided keyword(s) 
-    - @param<*keywords> a list of keyword(s) for the query 
+    - @param< keywords > a list of keyword(s) for the query 
     - @return A JSON object containing a list of articles, including article title, URL, and summary. If the query is not successful, returns an empty JSON
 - person_query(String year, String month, list keywords): Queries newsfeed sources based on provided first/last name 
-    - @param< fname > the first name of the person to query
-    - @param< lname > the last name of the person to query
+    - @param< name > the name (first last, separated by a space) of the person to query
     - @return A JSON object containing a list of articles, including article title, URL, and summary. If the query is not successful, returns an empty JSON
 - historical_query(String firstname, String lastname): Queries newsfeed sources from a given month/year based on provided keyword
     - @param< year > the year in which articles of interest would be published

@@ -1,3 +1,5 @@
 pytest >= 6.2.2
 coverage >= 5.4
 memory_profiler >= 0.5
+flask-restful >=.2
+flask >=.1
