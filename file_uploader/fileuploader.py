@@ -5,6 +5,11 @@
 import logging
 import sys
 import json
+
+
+import sys
+import os
+
 from file_uploader import _fileuploader_events as ev
 
 #Init logger

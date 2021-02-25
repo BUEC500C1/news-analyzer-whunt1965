@@ -4,6 +4,9 @@ ve/
 #VS code files
 .vscode
 
+#.idea files
+.idea
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

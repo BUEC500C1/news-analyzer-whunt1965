@@ -24,8 +24,8 @@ from nlp_analyzer import nlpanalyzer_api as nlp_api
 
 # merge
 application = DispatcherMiddleware(
-    fu_api.FileUploaderSplash.get(), {
-        '/nlp': nlp_api.NLPSplash
+    fu_api, {
+        '/nlp': nlp_api
     })
 
 if __name__ == '__main__':
