@@ -31,7 +31,7 @@ class HistoricalQuery(Resource):
 
 api.add_resource(NewsFeedSplash, '/newsfeed', '/')
 api.add_resource(KeywordQuery, '/newsfeed/keyquery/<keywords>')
-api.add_resource(PersonQuery, '/newsfeed/personquery/<keywords>')
+api.add_resource(PersonQuery, '/newsfeed/personquery/<name>')
 api.add_resource(HistoricalQuery, '/newsfeed/histquery/year=<year>&month=<month>&keywords=<keywords>')
 
 if __name__ == '__main__':
