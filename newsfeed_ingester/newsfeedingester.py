@@ -5,7 +5,10 @@
 
 import logging
 import sys
-from newsfeed_ingester import _newsfeedingester_events as ev
+if __name__ == '__main__':
+    import _newsfeedingester_events as ev
+else:
+    from newsfeed_ingester import _newsfeedingester_events as ev
 import json
 
 #Init logger

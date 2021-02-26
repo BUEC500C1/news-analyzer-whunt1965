@@ -1,14 +1,9 @@
-import sys
-import os
-
-PACKAGE_PARENT = '..'
-SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
-sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
-
-
 from flask import Flask
 from flask_restful import Resource, Api
-from nlp_analyzer import nlpanalyzer as nlp
+if __name__ == '__main__':
+    import nlpanalyzer as nlp
+else:
+    from nlp_analyzer import nlpanalyzer as nlp
 
 app = Flask(__name__)
 api = Api(app)

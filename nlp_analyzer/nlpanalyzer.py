@@ -3,7 +3,12 @@
 # ======================================================
 import logging
 import sys
-from nlp_analyzer import _nlpanalyzer_events as ev
+
+if __name__ == '__main__':
+    import _nlpanalyzer_events as ev
+else:
+    from nlp_analyzer import _nlpanalyzer_events as ev
+# import nlp_analyzer._nlpanalyzer_events as ev
 
 #Init logger
 logger = logging.getLogger(__name__) #set module level logger

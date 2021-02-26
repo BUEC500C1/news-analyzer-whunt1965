@@ -1,6 +1,8 @@
 #Virtual env
 ve/
 
+imp_issues.py
+
 #VS code files
 .vscode
 

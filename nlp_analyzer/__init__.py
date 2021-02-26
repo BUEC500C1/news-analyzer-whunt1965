@@ -1,3 +1,3 @@
-from ._nlpanalyzer_events import *
-from .nlpanalyzer import *
-from .nlpanalyzer_api import *
+# from ._nlpanalyzer_events import *
+# from .nlpanalyzer import *
+# from .nlpanalyzer_api import *
