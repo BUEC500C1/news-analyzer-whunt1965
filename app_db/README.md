@@ -26,4 +26,7 @@ Our documents collection is used to store documents uploaded by users through th
    }
 </pre>
 
-A snapshot of the current Documents collection is included here (containing a pair of sample documents uploaded during testing.
+A snapshot of the current Documents collection is included here (containing a pair of sample documents uploaded during testing:
+
+![snapshot](https://github.com/BUEC500C1/news-analyzer-whunt1965/blob/main/readme_pics/docs.png)
+
