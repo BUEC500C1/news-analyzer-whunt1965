@@ -26,7 +26,20 @@ Our documents collection is used to store documents uploaded by users through th
    }
 </pre>
 
-A snapshot of the current Documents collection is included here (containing a pair of sample documents uploaded during testing:
+A snapshot of the current Documents collection is included here (containing a pair of sample documents uploaded during testing):
 
 ![snapshot](https://github.com/BUEC500C1/news-analyzer-whunt1965/blob/main/readme_pics/docs.png)
+
+### Users
+Our users collection is used to store account information for users of ur system. Each user is stored as a JSON in the following format:
+<pre>
+{
+   "_id":<username>,
+   "email":<email>,
+   "password"<hashed password">
+}
+</pre>
+
+A snapshot of our current Users collection is included here (containing a pair of sample users uploaded during testing):
+
 
