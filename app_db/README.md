@@ -41,5 +41,5 @@ Our users collection is used to store account information for users of ur system
 </pre>
 
 A snapshot of our current Users collection is included here (containing a pair of sample users uploaded during testing):
-
+![snapshot](https://github.com/BUEC500C1/news-analyzer-whunt1965/blob/main/readme_pics/users.png)
 
