@@ -1,7 +1,11 @@
 #Virtual env
 ve/
 
+#Test file for import issues - local only
 imp_issues.py
+
+#Database configs
+db/
 
 #VS code files
 .vscode

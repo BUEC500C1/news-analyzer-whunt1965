@@ -11,7 +11,8 @@ import json
 # Start Tests
 # ==================
 valid = {
-    "ID":"/File/12/123",
+    "_id":"/Files/12/123",
+    "UID":"Wiley",
     "Upload_Date":"2021-02-17",
     "File_Metadata": {
         "Authors":["Osama"],
@@ -30,7 +31,8 @@ valid = {
 }
 
 valid2 = {
-    "ID":"/File/56/5678",
+    "_id":"/File/56/5678",
+    "UID":"Wiley",
     "Upload_Date":"2020-04-17",
     "File_Metadata": {
         "Authors":["Sam Seaborn"],
@@ -49,19 +51,20 @@ valid2 = {
 }
 
 partial_valid_for_Read_and_Delete  = {
-    "ID":"/File/12/123",
+    "_id":"/File/12/123",
     "Text": {},
 }
 
 update_valid  = {
-    "ID":"/File/12/123",
+    "_id":"/File/12/123",
     "Text": {
         "Text": ["New Stuff!", "and more new stuff!"]
     },
 }
 
 expected_update_valid_output = {
-    "ID":"/File/12/123",
+    "_id":"/File/12/123",
+    "UID":"Wiley",
     "Upload_Date":"2021-02-17",
     "File_Metadata": {
         "Authors":["Osama"],
@@ -80,7 +83,8 @@ expected_update_valid_output = {
 }
 
 expected_update_valid2_output = {
-    "ID":"/File/12/123",
+    "_id":"/File/12/123",
+    "UID":"Wiley",
     "Upload_Date":"2020-04-17",
     "File_Metadata": {
         "Authors":["Osama"],
@@ -108,7 +112,7 @@ expected_partial_read_output = {
 }
 
 expected_partial_delete_output = {
-    "ID":"/File/12/123",
+    "_id":"/File/12/123",
     "Upload_Date":"2021-02-17",
     "File_Metadata": {
         "Authors":["Osama"],
@@ -128,7 +132,8 @@ expected_partial_delete_output = {
 
 
 invalid = {
-    "ID":'',
+    "_id":'',
+    "UID":"Wiley",
     "Upload_Date":"2021-02-17",
     "File_Metadata": {
         "Authors":["Osama"],
@@ -148,6 +153,7 @@ invalid = {
 
 invalid2 = {
     "ID":"/File/56/5678",
+    "UID":"Wiley",
     "Upload_Date":"2020-04-17",
     "File_Metadata": {
         "Authors":["Sam Seaborn"],

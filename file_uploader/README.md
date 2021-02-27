@@ -17,7 +17,8 @@ This API can be utilized by simply cloning the repo (using git clone) and then u
 All functions require a JSON input of the following format (Note: a subset of these fields may only need specification as outlined in the function documentation  below):
 <pre>
    {
-       "ID":/File/< File_ID >/< User_ID >, 
+       "_id":/File/< File_ID >/>,
+       "UID":< User ID > 
        "Upload_Date":< YYYY-MM-DD >, 
        "File_Metadata":{
            "Authors":[< author1 >,...], 
@@ -25,7 +26,6 @@ All functions require a JSON input of the following format (Note: a subset of th
            "File_Source":< file_source >, "File_Tags":[< Tag1 >,...]
         }, 
        "Text":{
-           "Text_ID": /File/< File_ID >/< User_ID >/< Text_ID >,
            "Text":[< Paragraph1 >, ...],
            "Sentiment":[< Paragraph1_Sentiment >, ...],
            "Entity":[< Paragraph1_Entity >, ...],
@@ -34,8 +34,8 @@ All functions require a JSON input of the following format (Note: a subset of th
         },
    }
 </pre>
-- create(JSON fileObject): Uploads a file and creates an entry in the Database
-    - @param< JSON fileObject > A JSON file object containing all fields specified in the above format
+- create(file path): Uploads a file and creates an entry in the Database
+    - @param< file path > A path to a file to be uploaded into the database
     - @return The JSON object along with a reponse code indeicating success or failure
 - read(JSON fileObject): Allows a user to read a file (or specific components) from the database
     - @param< Fileobject > A JSON object containing the file ID and (optionally) the specific parameters to read
