@@ -1,6 +1,12 @@
 from flask import Flask
 from flask_restful import Resource, Api
+import json
 if __name__ == '__main__':
+    import sys
+    import os
+    PACKAGE_PARENT = '..'
+    SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
+    sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
     import nlpanalyzer as nlp
 else:
     from nlp_analyzer import nlpanalyzer as nlp
@@ -14,18 +20,26 @@ class NLPSplash(Resource):
 
 class AnalyzeSentiment(Resource):
     def get(self, text):
+        text = json.loads(text)
+        text = text["TEXT"]
         return nlp.analyze_sentiment(text)
 
 class AnalyzeEntity(Resource):
     def get(self, text):
+        text = json.loads(text)
+        text = text["TEXT"]
         return nlp.analyze_entity(text)
 
 class AnalyzeEntitySentiment(Resource):
     def get(self, text):
+        text = json.loads(text)
+        text = text["TEXT"]
         return nlp.analyze_entity_sentiment(text)
 
 class ClassifyContent(Resource):
     def get(self, text):
+        text = json.loads(text)
+        text = text["TEXT"]
         return nlp.classify_content(text)
 
 
