@@ -3,6 +3,7 @@
 # ======================================================
 from enum import Enum
 
+
 # Enum class for events related to the NLP API
 class Event(Enum):
     AnalyzeSentiment_Initiated = 1
