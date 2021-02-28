@@ -9,12 +9,17 @@ This repository contains an application designed to help journalists store and a
 Currently, the file_uplaoder, newsfeed_ingester, and nlp_analyzer stubs are available as REST API's hosted on an AWS EC2 instance. Details for each API are included below:
 
 - **file_uploader:**
-  - The file_uploader is available on port 80 of the EC2 instance and can be accessed via the following URI: *<EC2 Public IP>/FileUploader/<docobject>* with the doc object parameters as defined below based on the request type:
-    - POST: the doc object is a JSON object containing a path to a file {"PATH":<path>}to be uploaded/parsed (a JSON representation of the parsed file is returned).
-    - GET: the doc object a JSON of the following for {"doc_id":<id>) containing the document id to fetch. The document is returned as a JSON object
+  - The file_uploader is available on port 80 of the EC2 instance and can be accessed via the following URI: *< EC2 Public IP >/FileUploader/< docobject >* with the doc object parameters as defined below based on the request type:
+    - POST: the doc object is a JSON object containing a path to a file {"PATH":< path >}to be uploaded/parsed (a JSON representation of the parsed file is returned).
+    - GET: the doc object a JSON of the following for {"doc_id":< id >) containing the document id to fetch. The document is returned as a JSON object
     - PUT: the doc object is a JSON containing the document id and and any relevant fields of the document to update. The JSON of the updated document is returned.
-    - DELETE: the doc object is a JSON of the following for {"doc_id":<id>) containing the document id to fetch. A success message is returned if the document is successfully deleted.
+    - DELETE: the doc object is a JSON of the following for {"doc_id":< id >) containing the document id to fetch. A success message is returned if the document is successfully deleted.
 - **newsfeed_ingester:**
-  - The newsfeed_ingester is available on port 8081 of the EC2 instance via the following URI *<EC2 Public IP>:8081/newsfeed/*. Specific functions of the API can be accessed at the following URIs via the following GET methods:
-  - Keyword Query (URI: *<EC2 Public IP>:8081/newsfeed/<keywords>*). Here, the argument keywords can be a list
+  - The newsfeed_ingester is available on port 8081 of the EC2 instance via the following URI *<EC2 Public IP>:8081/newsfeed/*. Specific functions of the API can be accessed at the following URIs via GET methods:
+    - Keyword Query (URI: *< EC2 Public IP >:8081/newsfeed/< keywords >*). Here, keywords is a string of keywords to seach (with each keyword separated by an '&').
+      - Example: *< EC2 Public IP >:8081/newsfeed/keyquery/kw1&kw2*
+    - Person Query (URI: *< EC2 Public IP >:8081/newsfeed/personquery/< firstname&lastname >*): Here name is a string with the firstname and lastname separated by an '&'
+     - Example: *< EC2 Public IP >:8081/newsfeed/personquery/John&Doe*
+    - Historical Query (URI: *< EC2 Public IP >:8081/newsfeed/histquery/year=<year>&month=<month>&keywords=<keywords>*). Here, name year corresponds to a year (eg, 2020), month correponds to an English month name (eg, June), and keywords is a string of keywords to seach (with each keyword separated by an '&').
+      - Example: *< EC2 Public IP >:8081/newsfeedhistquery/year=1998&month=June&keywords=arg1&arg2*
 - **nlp_analyzer:** 
