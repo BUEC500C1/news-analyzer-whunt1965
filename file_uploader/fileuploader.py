@@ -45,18 +45,17 @@ def create(path):
 
 
 # Accessor for a file or component of a file in the DB
-# @param<myFileObj> A JSON object containing the file ID and (optionally) the specific parameters to read
-# @return If the read is successful returns the file (or specified subcomponents of a file) as a JSON object along with a Success code
+# @param<myFileObj> A file ID to aread
+# @return If the read is successful returns the file as a JSON object along with a Success code
 #         Otherwise, returns the original object and an error code
-def read(myFileObj):
-    logging.info(f"{{Event: {ev.Event.READ_Initiated}, Target: {myFileObj}}}")
-    fileObj = json.loads(myFileObj)
-    if (fileObj["ID"] == None) or fileObj["ID"] == "":
-        logging.error(f"{{Event: {ev.Event.READ_Error}, Target: {myFileObj}}}")
-        return(myFileObj, "404 Not Found")
-    logging.info(f"{{Event: {ev.Event.READ_Success}, Target: {myFileObj}}}")
+def read(fileID):
+    logging.info(f"{{Event: {ev.Event.READ_Initiated}, Target: {fileID}}}")
+    if (fileID == None) or fileID == "":
+        logging.error(f"{{Event: {ev.Event.READ_Error}, Target: {fileID}}}")
+        return(fileID, "404 Not Found")
+    logging.info(f"{{Event: {ev.Event.READ_Success}, Target: {fileID}}}")
     # Retrieve specific components Here and return those
-    return (myFileObj, "200 OK")
+    return (fileID, "200 OK")
 
 
 # Modifies a file or component of a file in the DB
