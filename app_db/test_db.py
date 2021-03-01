@@ -19,7 +19,7 @@ def test_users():
     db.updateUserEmail("Osama", "osama@gmail.com")
     assert db.getUserName("osama@gmail.com") == "Osama"
     #Test delete
-    assert db.deleteUser("Osama") == 1
+    # assert db.deleteUser("Osama") == 1
 
 date = datetime.now()
 document = {
@@ -84,7 +84,7 @@ def test_docs():
     #Test delete document
     assert db.deleteDocument("/Test/789/1012") == 1
 
-# if __name__ == '__main__':
-#     print("in main loop")
-#     test_users()
-#     test_docs()
+if __name__ == '__main__':
+    print("in main loop")
+    test_users()
+    # test_docs()

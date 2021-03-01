@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+from bson.json_util import dumps, loads
 import os
 
 # connection key
@@ -38,7 +39,9 @@ def addDocument(document):
 def getDocument(doc_id):
     documents = _getDocCollection()
     query = {"_id": doc_id}
-    doc = documents.find(query)
+    doc = documents.find_one(query)
+    doc = list(doc)
+    ret = dumps(doc)
     return list(doc)[0]
 
 

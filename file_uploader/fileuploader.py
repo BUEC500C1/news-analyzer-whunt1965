@@ -6,11 +6,12 @@ import logging
 import sys
 import json
 
-
 import sys
+
 if __name__ == '__main__':
     import sys
     import os
+
     PACKAGE_PARENT = '..'
     SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
     sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
@@ -23,11 +24,13 @@ else:
     from file_uploader import _fileuploader_helpers as funcs
     from app_db import db
 
-#Init logger
-logger = logging.getLogger(__name__) #set module level logger
-#configure logging -- note: set to std:out for debug
+# Init logger
+logger = logging.getLogger(__name__)  # set module level logger
+# configure logging -- note: set to std:out for debug
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s')
-#Re
+
+
+# Re
 
 
 # Uploads a file and creates an entry in the Database
@@ -36,7 +39,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='%(asctime)s 
 def create(path):
     logging.info(f"{{Event: {ev.Event.CREATE_Initiated}, Target: {path}}}")
     fileObj = funcs._generateObject(path)
-    if (fileObj["_id"] == ""):
+    if fileObj["_id"] == "":
         logging.error(f"{{Event: {ev.Event.CREATE_Error}, Target: {path}}}")
         return path, "404 Not Found"
     logging.info(f"{{Event: {ev.Event.CREATE_Success}, Target: {path}}}")
@@ -50,12 +53,13 @@ def create(path):
 #         Otherwise, returns the original object and an error code
 def read(fileID):
     logging.info(f"{{Event: {ev.Event.READ_Initiated}, Target: {fileID}}}")
-    if (fileID == None) or fileID == "":
+    if (fileID is None) or fileID == "":
         logging.error(f"{{Event: {ev.Event.READ_Error}, Target: {fileID}}}")
-        return(fileID, "404 Not Found")
+        return fileID, "404 Not Found"
+    result = db.getDocument(fileID)
     logging.info(f"{{Event: {ev.Event.READ_Success}, Target: {fileID}}}")
     # Retrieve specific components Here and return those
-    return (fileID, "200 OK")
+    return result, "200 OK"
 
 
 # Modifies a file or component of a file in the DB
@@ -67,7 +71,7 @@ def update(myFileObj):
     fileObj = json.loads(myFileObj)
     if (fileObj["ID"] == None) or fileObj["ID"] == "":
         logging.error(f"{{Event: {ev.Event.UPDATE_Error}, Target: {myFileObj}}}")
-        return(myFileObj, "404 Not Found")
+        return (myFileObj, "404 Not Found")
     # updates file and returns new version here
     logging.info(f"{{Event: {ev.Event.UPDATE_Success}, Target: {myFileObj}}}")
     return (myFileObj, "200 OK")
@@ -83,17 +87,18 @@ def delete(myFileObj):
     fileObj = json.loads(myFileObj)
     if (fileObj["ID"] == None) or fileObj["ID"] == "":
         logging.error(f"{{Event: {ev.Event.DELETE_Error}, Target: {myFileObj}}}")
-        return(myFileObj, "404 Not Found")
+        return (myFileObj, "404 Not Found")
     # deletes file (or components) and returns empty JSON (or new version here)
     logging.info(f"{{Event: {ev.Event.DELETE_Success}, Target: {myFileObj}}}")
     return (myFileObj, "200 OK")
 
 
-#Simple debug for log -- to be deleted
+# Simple debug for log -- to be deleted
 if __name__ == '__main__':
     # test = {"ID":"/File/123/1234"}
     # test = json.dumps(test)
     print(create('./test/test.pdf'))
+    print(read("./test/test.pdf"))
     # read(test)
     # update(test)
     # delete(test)
