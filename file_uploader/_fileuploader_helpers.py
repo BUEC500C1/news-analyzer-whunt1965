@@ -4,6 +4,7 @@
 
 from PyPDF2 import PdfFileReader
 from datetime import datetime
+import json
 
 
 # Generate a default file object with empty fields
@@ -32,7 +33,7 @@ def _generateObject(path):
     myobj["Upload_Date"] = str(datetime.now())
     myobj["File_Metadata"] = _getMetadata(path)
     myobj["Text"]["Text"] = _generateText(path)
-
+    # myobj = json.dumps(myobj)
     return myobj
 
 

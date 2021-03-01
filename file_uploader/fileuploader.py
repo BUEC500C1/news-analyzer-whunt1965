@@ -8,9 +8,20 @@ import json
 
 
 import sys
-import os
+if __name__ == '__main__':
+    import sys
+    import os
+    PACKAGE_PARENT = '..'
+    SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
+    sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
+    import _fileuploader_events as ev
+    import _fileuploader_helpers as funcs
+    from app_db import db
 
-from file_uploader import _fileuploader_events as ev
+else:
+    from file_uploader import _fileuploader_events as ev
+    from file_uploader import _fileuploader_helpers as funcs
+    from app_db import db
 
 #Init logger
 logger = logging.getLogger(__name__) #set module level logger
@@ -20,16 +31,17 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='%(asctime)s 
 
 
 # Uploads a file and creates an entry in the Database
-# @param<myFileObj> A JSON object of a file conforming to input format specified in the API documentation
+# @param<myFileObj> A path to a file to insert into the DB
 # @return The JSON object along with a reponse code indeicating success or failure
-def create(myFileObj):
-    logging.info(f"{{Event: {ev.Event.CREATE_Initiated}, Target: {myFileObj}}}")
-    fileObj = json.loads(myFileObj)
-    if (fileObj["ID"] == None) or fileObj["ID"] == "":
-        logging.error(f"{{Event: {ev.Event.CREATE_Error}, Target: {myFileObj}}}")
-        return(myFileObj, "404 Not Found")
-    logging.info(f"{{Event: {ev.Event.CREATE_Success}, Target: {myFileObj}}}")
-    return (myFileObj, "200 OK")
+def create(path):
+    logging.info(f"{{Event: {ev.Event.CREATE_Initiated}, Target: {path}}}")
+    fileObj = funcs._generateObject(path)
+    if (fileObj["_id"] == ""):
+        logging.error(f"{{Event: {ev.Event.CREATE_Error}, Target: {path}}}")
+        return path, "404 Not Found"
+    logging.info(f"{{Event: {ev.Event.CREATE_Success}, Target: {path}}}")
+    result = db.addDocument(fileObj)
+    return result, "200 OK"
 
 
 # Accessor for a file or component of a file in the DB
@@ -80,9 +92,9 @@ def delete(myFileObj):
 
 #Simple debug for log -- to be deleted
 if __name__ == '__main__':
-    test = {"ID":"/File/123/1234"}
-    test = json.dumps(test)
-    create(test)
-    read(test)
-    update(test)
-    delete(test)
+    # test = {"ID":"/File/123/1234"}
+    # test = json.dumps(test)
+    print(create('./test/test.pdf'))
+    # read(test)
+    # update(test)
+    # delete(test)
