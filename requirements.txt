@@ -3,3 +3,4 @@ coverage >= 5.4
 memory_profiler >= 0.5
 flask-restful
 flask >=.1
+pyPDF2
