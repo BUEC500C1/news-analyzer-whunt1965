@@ -45,6 +45,7 @@ def test_users():
     # Test Update email
     db.updateUserEmail("test", "osama@gmail.com")
     assert db.getUserName("osama@gmail.com") == "test"
+    db.updateUserEmail("test", "Osama@BU.edu")  # reset for future tests
 
     # Test delete
     db.addDocument(testdoc)  # Insert a document for recursive deletion
@@ -151,4 +152,4 @@ def test_docs():
 if __name__ == '__main__':
     print("in main loop")
     test_users()
-    # test_docs()
+    test_docs()

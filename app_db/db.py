@@ -182,11 +182,22 @@ def addUser(newuser):
         return None
 
     user = _getUserCollection()  # Get reference to collection
-    query = {"username": newuser["username"], "Deleted": "False"}
+    query = {"username": newuser["username"]}
+    query_with_flag = {"username": newuser["username"], "Deleted": "True"}
+
+    # Check if this user exists in the DB and if not, insert it
     if user.count_documents(query, limit=1) == 0:  # Ensure this username doesn't already exist in the DB
         newuser["Deleted"] = "False"  # Add deleted tag
         user.insert_one(newuser)  # Insert user
         return 1
+    # Check if this user exists in the DB as deleted and if so, update deleted flag
+    elif user.count_documents(query_with_flag, limit=1) == 1:
+        update = {"$set": {"Deleted": "False"}}
+        result = user.update_one(query, update)
+        return result.modified_count
+        # TODO Un-mark deleted documents... maybe
+
+    # Otherwise, return None
     else:
         return None  # Otherwise, don't insert
 
@@ -210,10 +221,11 @@ def getUserName(email):
     user = _getUserCollection()
     query = {"email": email}
     user_info = user.find_one(query)
-    list_cur = dict(user_info)
-    if list_cur:
-        username = list_cur["username"]
-        return username
+    if user_info is not None:
+        list_cur = dict(user_info)
+        if list_cur:
+            username = list_cur["username"]
+            return username
     return None
 
 
