@@ -45,30 +45,3 @@ api.add_resource(FileUploader, '/FileUploader/<docId>')
 if __name__ == '__main__':
     app.run(debug=True)
 
-# =================================
-# Ignore - copied in on bad branch merge - developing as a new feature in a branch
-# =================================
-
-# @app.route('/')
-# def home():
-#     return """<h1>Welcome to the File Uploader</h1>"""
-#
-# # POST method
-# @app.route('/upload/<path:filepath>', methods=['POST'])
-# def upload(filepath):
-#     return fu.create(filepath)
-#
-# #GET method
-# @app.route('/read/id=<path:fileid>', methods=['GET'])
-# def get(fileid):
-#     return fu.read(fileid)
-#
-# #DELETE method
-# @app.route('/delete/id=<path:fileid>', methods=['DELETE'])
-# def delete(fileid):
-#     return fu.delete(fileid)
-#
-# #PUT method
-# @app.route('/update/mod=<string:fileobj>', methods=['PUT'])
-# def put(fileobj):
-#     return fu.update(fileobj)
