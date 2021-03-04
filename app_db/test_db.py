@@ -4,7 +4,7 @@ if __name__ == '__main__':
     PACKAGE_PARENT = '..'
     SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
     sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
-    from . import db
+    import db
 else:
     from app_db import db
 
@@ -41,7 +41,7 @@ def test_users():
 
     assert db.addUser(user) == 1
     # Test try insert same unique ID
-    assert db.addUser(user) == None
+    assert db.addUser(user) is None
     # Test get Username from email
     assert db.getUserName("Osama@bu.edu") == "test"
     # Test get hashed password
@@ -54,7 +54,6 @@ def test_users():
     # Test Update email
     db.updateUserEmail("test", "osama@gmail.com")
     assert db.getUserName("osama@gmail.com") == "test"
-    db.updateUserEmail("test", "Osama@BU.edu")  # reset for future tests
 
     # Test delete
     db.addDocument(testdoc)  # Insert a document for recursive deletion
@@ -68,7 +67,7 @@ date = datetime.now()
 document1 = {
     "Name": "1012.pdf",
     "path": "/Test/789/1012.pdf",
-    "UID": "test",
+    "UID": "test2",
     "Upload_Date": date,
     "File_Metadata": {
         "Authors": ["Osama"],
@@ -88,7 +87,7 @@ document1 = {
 document2 = {
     "Name": "3457.pdf",
     "path": "/Files/34/3457.pdf",
-    "UID": "test",
+    "UID": "test2",
     "Upload_Date": datetime.now(),
     "File_Metadata": {
         "Authors": ["Jose"],
@@ -115,13 +114,22 @@ modification = {"Text": {
 
 
 def test_docs():
+    user = {
+        "username": "test2",
+        "email": "OOOOO@bu.edu",
+        "password": 123
+    }
+
+    # Begin by creating a valid user
+    assert db.addUser(user) == 1
+
     # Test add document
     assert db.addDocument(document1) == 1
 
     # Test get Single Document
-    query = {'Name': "1012.pdf", "UID": "test"}
+    query = {'Name': "1012.pdf", "UID": "test2"}
     q = json.loads(db.getDocument(query))
-    assert q[0]['File_Metadata']["Authors"][0] == "Osama"
+    assert q['File_Metadata']["Authors"][0] == "Osama"
 
     #  Test that we cannot re-insert the same document
     assert db.addDocument(document1) is None
@@ -130,30 +138,33 @@ def test_docs():
     assert db.addDocument(document2) == 1
 
     # Test get all docs belonging to UID "test"
-    q = json.loads(db.getDocuments("test"))
+    q = json.loads(db.getDocuments("test2"))
     for item in q:
-        assert item["UID"] == "test"
+        print(item["UID"])
+        print(db._getActiveUserID("test2"))
+        assert item["UID"]['_id'] == str(db._getActiveUserID("test2")) #Breaking here. Fix this test
 
     # Test modify document
-    query = {'Name': "1012.pdf", "UID": "test"}
+    query = {'Name': "1012.pdf", "UID": "test2"}
     q = json.loads(db.updateDocument(query, modification))
-    assert q[0]['Text']['Text'] == ["Hello, this is another test", "Its terrible"]
+    assert q['Text']['Text'] == ["Hello, this is another test", "Its terrible"]
 
     # Test delete document
-    query = {'Name': "1012.pdf", "UID": "test"}
+    query = {'Name': "1012.pdf", "UID": "test2"}
     assert db.deleteDocument(query) == 1
     q = json.loads(db.getDocument(query))
-    assert q[0]["Deleted"] == "True"
+    assert q["Deleted"] == "True"
 
     # Now reinsert document and test that deleting all documents belong to test returns correct deleted count
     assert db.addDocument(document1) == 1
-    assert db.deleteAllUserDocs("test") == 2
+    assert db.deleteAllUserDocs("test2") == 2
 
-    q = json.loads(db.getDocuments("test"))
+    q = json.loads(db.getDocuments("test2"))
     for item in q:
         assert item["Deleted"] == "True"
 
-    # # Clean up unit tests from DB
+    # # Clean up unit tests from DB by deleting user
+    assert db.deleteUser(user) == 1
     # documents = db._getDocCollection()
     # documents.delete_many({"UID": "test"})
 

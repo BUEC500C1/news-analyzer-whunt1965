@@ -22,7 +22,6 @@ def _getDefaultFileObj():
             "Entity_Sentiment": [],
             "Content_Classification": [],
         },
-        "Deleted": "False"
     }
     return fileobj
 
@@ -81,5 +80,5 @@ def _generateText(path):
 
 
 if __name__ == '__main__':
-    print(generateObject('./test/test.pdf'))
-    print(generateObject('./test/test333.pdf'))
+    print(generateObject('./test/test.pdf', "Wiley"))
+    print(generateObject('./test/test333.pdf', "Wiley"))

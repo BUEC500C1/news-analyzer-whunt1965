@@ -2,6 +2,7 @@ from pymongo import MongoClient
 from bson.json_util import dumps, loads
 import json
 import os
+import logging
 
 # Valid identifiers for a document (in combination with UID)
 docIds = ["_id", "Name"]
@@ -33,19 +34,19 @@ def _getDocCollection():
 # @return          1 if the document is successfully added and None otherwise
 def addDocument(document):
     documents = _getDocCollection()
-    query = {"Name": document["Name"], "UID": document["UID"]}  # Initial query to scan user ID
-    query_with_flag = {"Name": document["Name"], "UID": document["UID"], "Deleted": "True"}
+
+    # Query to determine if this document already exists in the DB
+    query = {"Name": document["Name"], "UID": _getActiveUserID(document["UID"]), "Deleted": "False"}
 
     # Check if this document exists in the DB and if not, insert it
-    if documents.count_documents(query, limit=1) == 0:
+    if documents.find_one(query) is None:
+        document["UID"] = _getActiveUserID(document["UID"])
         document["Deleted"] = "False"
-        documents.insert_one(document)  # Insert document
-        return 1
-    # Check if this document exists in the DB as deleted and if so, update deleted flag
-    elif documents.count_documents(query_with_flag, limit=1) == 1:
-        update = {"Deleted": "False"}
-        updateDocument(query, update)
-        return 1
+        try: # Need to fix this. something strange is happening with acid props
+            documents.insert_one(document)  # Insert document
+            return 1
+        except:
+            return None
     # Otherwise, return None
     else:
         return None  # Otherwise, don't insert
@@ -64,12 +65,15 @@ def getDocument(docobj):
 
     # Add valid identifiers to query
     query = dict()
-    query["UID"] = docobj["UID"]
+    query["UID"] = _getActiveUserID(docobj["UID"])  # Add internal UID to doc
+    query["Deleted"] = "False"  # Ensure we do not fetch deleted documents
     for identifier in ids:
         query[identifier] = docobj[identifier]
 
+    query["Deleted"] = "False"  # Ensure we do not fetch deleted documents
+
     documents = _getDocCollection()
-    doc = documents.find(query, limit=1)  # find document(s)
+    doc = documents.find_one(query)  # find document(s)
     ret = dumps(doc, indent=2)  # convert to JSON
     return ret
 
@@ -80,7 +84,8 @@ def getDocument(docobj):
 def getDocuments(uid):
     documents = _getDocCollection()  # Get collection
 
-    query = {"UID": uid}  # Set query parameters
+    query = {"UID": _getActiveUserID(uid), "Deleted": "False"}  # Set query parameters
+
     doc = documents.find(query)  # find document(s)
     ret = dumps(doc, indent=2)  # convert to JSON
     return ret
@@ -100,7 +105,8 @@ def updateDocument(idObj, update):
 
     # Add valid identifiers to query
     query = dict()
-    query["UID"] = idObj["UID"]
+    query["Deleted"] = "False"  # Ensure we do not fetch deleted documents
+    query["UID"] = _getActiveUserID(idObj["UID"])  # Add internal UID
     for identifier in ids:
         query[identifier] = idObj[identifier]
 
@@ -128,7 +134,8 @@ def deleteDocument(idObj):
 
     # Add valid identifiers to query
     query = dict()
-    query["UID"] = idObj["UID"]
+    query["UID"] = _getActiveUserID(idObj["UID"])
+    query["Deleted"] = "False"  # Ensure we do not fetch deleted documents
     for identifier in ids:
         query[identifier] = idObj[identifier]
 
@@ -144,7 +151,7 @@ def deleteDocument(idObj):
 # @return       The number of documents marked with a deleted flag
 def deleteAllUserDocs(username):
     documents = _getDocCollection()
-    query = {"UID": username}
+    query = {"UID": _getActiveUserID(username), "Deleted": "False"}
     deletedflag = {"$set": {"Deleted": "True"}}  # Set deleted flag on "deleted" document
     result = documents.update_many(query, deletedflag)
     return result.modified_count
@@ -173,29 +180,44 @@ def _getUserCollection():
     return users
 
 
+# Helper method to get an id of an active user
+def _getActiveUserID(username):
+    user = _getUserCollection()
+    query = {"username": username, "Deleted": "False"}
+    if user.count_documents(query) == 1:
+        userinfo = user.find_one(query)
+        return userinfo.get('_id')
+    else:
+        return None
+
+
 # Add a user to the DB
 # @param<newUser>   A user object containing at a minimum, a unique username
 # @return           1 if the insert is successful and None otherwise
 def addUser(newuser):
     # User entities must have a username
-    if "username" not in newuser:
+    if "username" not in newuser or "password" not in newuser or "email" not in newuser:
         return None
 
     user = _getUserCollection()  # Get reference to collection
-    query = {"username": newuser["username"]}
-    query_with_flag = {"username": newuser["username"], "Deleted": "True"}
+    query1 = {"username": newuser["username"], "Deleted": "False"}
+    query2 = {"username": newuser["username"], "Deleted": "False"}
 
-    # Check if this user exists in the DB and if not, insert it
-    if user.count_documents(query, limit=1) == 0:  # Ensure this username doesn't already exist in the DB
+    # Check if this user (username and email) exists in the DB and if not, insert it
+    if user.count_documents(query1) == 0 and user.count_documents(query2) == 0:
         newuser["Deleted"] = "False"  # Add deleted tag
         user.insert_one(newuser)  # Insert user
         return 1
-    # Check if this user exists in the DB as deleted and if so, update deleted flag
-    elif user.count_documents(query_with_flag, limit=1) == 1:
-        update = {"$set": {"Deleted": "False"}}
-        result = user.update_one(query, update)
-        return result.modified_count
-        # TODO Un-mark deleted documents... maybe
+
+    # # Check if this user exists in the DB as deleted and if so, add a new user with the updated fields
+    # query_with_flag = {"username": newuser["username"], "Deleted": "True"}
+    # if user.count_documents(query_with_flag) == 1:
+    #     newuser["Deleted"] = "False"  # Add deleted tag
+    #     user.insert_one(newuser)  # Insert user
+    #     return 1
+    #     # update = {"$set": {"Deleted": "False", "email": newuser["email"], "password": newuser["password"]}}
+    #     # result = user.update_one(query, update)
+    #     # return result.modified_count
 
     # Otherwise, return None
     else:
@@ -207,7 +229,7 @@ def addUser(newuser):
 # @return            The entry for this user in the DB (as a JSON) or None if no user is found
 def getUser(username):
     user = _getUserCollection()
-    query = {"username": username}
+    query = {"username": username, "Deleted": "False"}
     user_info = user.find(query)
     ret = dumps(user_info, indent=2)
     return ret
@@ -219,7 +241,7 @@ def getUser(username):
 # @return         The username for this user in the DB (as a JSON) or None if no user is found
 def getUserName(email):
     user = _getUserCollection()
-    query = {"email": email}
+    query = {"email": email, "Deleted": "False"}
     user_info = user.find_one(query)
     if user_info is not None:
         list_cur = dict(user_info)
@@ -234,7 +256,7 @@ def getUserName(email):
 # @return            The hashed password for this user or None if no user is found
 def getHashedPass(username):
     user = _getUserCollection()
-    query = {"username": username}
+    query = {"username": username, "Deleted": "False"}
     user_info = user.find_one(query)
     ret = json.loads(dumps(user_info, indent=2))
 
@@ -250,7 +272,7 @@ def getHashedPass(username):
 # @return            The number of emails updated (1 if successful and 0 otherwise)
 def updateUserEmail(username, update):
     user = _getUserCollection()
-    query = {"username": username}
+    query = {"username": username, "Deleted": "False"}
     newvalues = {"$set": {"email": update}}
     result = user.update_one(query, newvalues)
     return result.modified_count
@@ -262,7 +284,7 @@ def updateUserEmail(username, update):
 # @return            The number of passwords updated (1 if successful and 0 otherwise)
 def updateUserPass(username, update):
     user = _getUserCollection()
-    query = {"username": username}
+    query = {"username": username, "Deleted": "False"}
     newvalues = {"$set": {"password": update}}
     result = user.update_one(query, newvalues)
     return result.modified_count
@@ -273,10 +295,9 @@ def updateUserPass(username, update):
 # @return A tuple containing the number of users deleted and the number of documents deleted
 def deleteUser(username):
     user = _getUserCollection()
-    query = {"username": username}
+    # uid = _getActiveUserID(username)
+    docsdeleted = deleteAllUserDocs(username)  # Recursively mark as deleted all documents associated with user
+    query = {"username": username, "Deleted": "False"}
     update = {"$set": {"Deleted": "True"}}
     result = user.update_one(query, update)
-    docsdeleted = deleteAllUserDocs(username)  # Recursively mark as deleted all documents associated with user
     return result.modified_count, docsdeleted
-
-
