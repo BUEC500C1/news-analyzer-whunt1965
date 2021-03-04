@@ -78,11 +78,14 @@ def getDocument(docobj):
 
 # Retrieve multiple documents belonging to a single user from the DB
 # @param<UID>   A string containing the username of a user who's documents we wish to access
-# @return       The documents (as a JSON)
+# @return       The documents (as a JSON) if atleast one is found and None otherwise
 def getDocuments(uid):
     documents = _getDocCollection()  # Get collection
 
     query = {"UID": _getActiveUserID(uid), "Deleted": "False"}  # Set query parameters
+
+    if documents.count_documents(query) == 0:  # Ensure there are documents in the DB
+        return None
 
     doc = documents.find(query)  # find document(s)
     ret = dumps(doc, indent=2)  # convert to JSON
@@ -123,7 +126,7 @@ def updateDocument(idObj, update):
 # Mark a document in the DB as deleted
 # @param<idObj>  A JSON object containing the UID and another valid identifier (id or Name) associated with the
 #                document
-# @return        The number of documents updated if successful and None otherwise
+# @return        The number of documents updated
 def deleteDocument(idObj):
     ids = _validateDocObj(idObj)  # Validate that this json object has the correct identifiers for a query
 
@@ -192,7 +195,7 @@ def _getActiveUserID(username):
 
 # Add a user to the DB
 # TODO with login -- ensure emails unique
-# @param<newUser>   A user object containing at a minimum, a unique username
+# @param<newUser>   A user object containing a unique username and email as well as a hashed password
 # @return           1 if the insert is successful and None otherwise
 def addUser(newuser):
     # User entities must have a username
@@ -258,15 +261,19 @@ def getHashedPass(username):
 
 
 # Update a user's email in the DB
+# # TODO with login -- ensure emails unique
 # @param<username>   A username (string) to be queried in the DB
 # @param<update>     The new value for a user's email
-# @return            The number of emails updated (1 if successful and 0 otherwise)
+# @return            1 if successful and 0 otherwise
 def updateUserEmail(username, update):
     user = _getUserCollection()
-    query = {"username": username, "Deleted": "False"}
-    newvalues = {"$set": {"email": update}}
-    result = user.update_one(query, newvalues)
-    return result.modified_count
+    testquery = {"email": update, "Deleted": "False"}
+    if user.count_documents(testquery) == 0:
+        query = {"username": username, "Deleted": "False"}
+        newvalues = {"$set": {"email": update}}
+        result = user.update_one(query, newvalues)
+        return result.modified_count
+    return None
 
 
 # Update a user's password in the DB
