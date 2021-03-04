@@ -1,6 +1,7 @@
 if __name__ == '__main__':
     import sys
     import os
+
     PACKAGE_PARENT = '..'
     SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
     sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
@@ -139,10 +140,9 @@ def test_docs():
 
     # Test get all docs belonging to UID "test"
     q = json.loads(db.getDocuments("test2"))
+    w = json.loads(db.getUser("test2"))
     for item in q:
-        print(item["UID"])
-        print(db._getActiveUserID("test2"))
-        assert item["UID"]['_id'] == str(db._getActiveUserID("test2")) #Breaking here. Fix this test
+        assert item["UID"] == w["_id"]
 
     # Test modify document
     query = {'Name': "1012.pdf", "UID": "test2"}
@@ -152,21 +152,15 @@ def test_docs():
     # Test delete document
     query = {'Name': "1012.pdf", "UID": "test2"}
     assert db.deleteDocument(query) == 1
-    q = json.loads(db.getDocument(query))
-    assert q["Deleted"] == "True"
 
     # Now reinsert document and test that deleting all documents belong to test returns correct deleted count
     assert db.addDocument(document1) == 1
     assert db.deleteAllUserDocs("test2") == 2
 
-    q = json.loads(db.getDocuments("test2"))
-    for item in q:
-        assert item["Deleted"] == "True"
-
-    # # Clean up unit tests from DB by deleting user
-    assert db.deleteUser(user) == 1
-    # documents = db._getDocCollection()
-    # documents.delete_many({"UID": "test"})
+    # Clean up unit tests from DB by deleting user
+    delusers, deldocs = db.deleteUser("test2")
+    assert delusers == 1
+    assert deldocs == 0
 
 
 if __name__ == '__main__':

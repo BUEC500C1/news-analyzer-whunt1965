@@ -2,6 +2,7 @@ from pymongo import MongoClient
 from bson.json_util import dumps, loads
 import json
 import os
+import copy
 import logging
 
 # Valid identifiers for a document (in combination with UID)
@@ -32,22 +33,19 @@ def _getDocCollection():
 #                  and "UID" fields must not match an existing (non-deleted) document in the database (ie, it must not
 #                  have both the same UID and Name as another document already stored and not marked as deleted)
 # @return          1 if the document is successfully added and None otherwise
-def addDocument(document):
+def addDocument(document_input):
     documents = _getDocCollection()
+    document = copy.copy(document_input)  # Create a copy so don't update fields of original document
 
     # Query to determine if this document already exists in the DB
-    query = {"Name": document["Name"], "UID": _getActiveUserID(document["UID"]), "Deleted": "False"}
+    query = {"Name": document["Name"], "UID":  _getActiveUserID(document["UID"]), "Deleted": "False"}
 
     # Check if this document exists in the DB and if not, insert it
-    if documents.find_one(query) is None:
+    if documents.count_documents(query) == 0:
         document["UID"] = _getActiveUserID(document["UID"])
         document["Deleted"] = "False"
-        try: # Need to fix this. something strange is happening with acid props
-            documents.insert_one(document)  # Insert document
-            return 1
-        except:
-            return None
-    # Otherwise, return None
+        documents.insert_one(document)  # Insert document
+        return 1
     else:
         return None  # Otherwise, don't insert
 
@@ -115,9 +113,10 @@ def updateDocument(idObj, update):
     result = documents.update_one(query, newvalues)  # Update document
 
     if result.modified_count > 0:  # If we have successfully updated the document, return the document by calling get
+        objcopy = copy.copy(idObj)  # Create a shallow copy to avoid mutating original object
         if "Name" in update:
-            idObj["Name"] = update["Name"]
-        obj = getDocument(idObj)  # Sometimes returning old object -- maybe an ACID issue
+            objcopy["Name"] = update["Name"]
+        obj = getDocument(objcopy)
         return obj
 
 
@@ -192,6 +191,7 @@ def _getActiveUserID(username):
 
 
 # Add a user to the DB
+# TODO with login -- ensure emails unique
 # @param<newUser>   A user object containing at a minimum, a unique username
 # @return           1 if the insert is successful and None otherwise
 def addUser(newuser):
@@ -199,25 +199,17 @@ def addUser(newuser):
     if "username" not in newuser or "password" not in newuser or "email" not in newuser:
         return None
 
+    insertuser = copy.copy(newuser)  # create a copy so don't modify original object
+
     user = _getUserCollection()  # Get reference to collection
     query1 = {"username": newuser["username"], "Deleted": "False"}
-    query2 = {"username": newuser["username"], "Deleted": "False"}
+    query2 = {"email": newuser["email"], "Deleted": "False"}
 
     # Check if this user (username and email) exists in the DB and if not, insert it
     if user.count_documents(query1) == 0 and user.count_documents(query2) == 0:
-        newuser["Deleted"] = "False"  # Add deleted tag
-        user.insert_one(newuser)  # Insert user
+        insertuser["Deleted"] = "False"  # Add deleted tag
+        user.insert_one(insertuser)  # Insert user
         return 1
-
-    # # Check if this user exists in the DB as deleted and if so, add a new user with the updated fields
-    # query_with_flag = {"username": newuser["username"], "Deleted": "True"}
-    # if user.count_documents(query_with_flag) == 1:
-    #     newuser["Deleted"] = "False"  # Add deleted tag
-    #     user.insert_one(newuser)  # Insert user
-    #     return 1
-    #     # update = {"$set": {"Deleted": "False", "email": newuser["email"], "password": newuser["password"]}}
-    #     # result = user.update_one(query, update)
-    #     # return result.modified_count
 
     # Otherwise, return None
     else:
@@ -230,13 +222,12 @@ def addUser(newuser):
 def getUser(username):
     user = _getUserCollection()
     query = {"username": username, "Deleted": "False"}
-    user_info = user.find(query)
+    user_info = user.find_one(query)
     ret = dumps(user_info, indent=2)
     return ret
 
 
 # Retrieve a username from an email
-# TODO with login -- ensure emails unique
 # @param<email>   An email (string) to be queried in the DB
 # @return         The username for this user in the DB (as a JSON) or None if no user is found
 def getUserName(email):
@@ -295,7 +286,6 @@ def updateUserPass(username, update):
 # @return A tuple containing the number of users deleted and the number of documents deleted
 def deleteUser(username):
     user = _getUserCollection()
-    # uid = _getActiveUserID(username)
     docsdeleted = deleteAllUserDocs(username)  # Recursively mark as deleted all documents associated with user
     query = {"username": username, "Deleted": "False"}
     update = {"$set": {"Deleted": "True"}}
