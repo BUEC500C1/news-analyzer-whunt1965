@@ -59,7 +59,7 @@ Our documents collection is used to store documents uploaded by users through th
 #### Documents Collection Snaphot
 A snapshot of the current Documents collection is included here (containing a few sample documents uploaded during testing):
 
-![snapshot](https://github.com/BUEC500C1/news-analyzer-whunt1965/blob/main/readme_pics/docs.png)
+![snapshot](https://github.com/BUEC500C1/news-analyzer-whunt1965/blob/main/photos/docs.png)
 
 ### Users
 Our users collection is used to store account information for users of ur system. Each user is stored as a JSON in the following format:
@@ -108,5 +108,5 @@ Our users collection is used to store account information for users of ur system
 
 #### Users Collection Snaphot
 A snapshot of our current Users collection is included here (containing a pair of sample users uploaded during testing):
-![snapshot](https://github.com/BUEC500C1/news-analyzer-whunt1965/blob/main/readme_pics/users.png)
+![snapshot](https://github.com/BUEC500C1/news-analyzer-whunt1965/blob/main/photos/users.png)
 
