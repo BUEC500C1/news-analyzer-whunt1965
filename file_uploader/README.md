@@ -11,19 +11,20 @@ The file uploader module provides an API to securely upload a file into the data
     - As a developer, I want access to log-level information on each method for debugging and system analysis purposes
 
 ## Build Instructions
-This API can be utilized by simply cloning the repo (using git clone) and then using import file_uploader in whichever file needs to access the API.
+This API can be utilized by simply cloning the repo (using git clone) and then using import file_uploader in whichever file needs to access the API. Note: This module is linked to a database and will also require the database module to function. Please also clone [app_db](https://github.com/BUEC500C1/news-analyzer-whunt1965/tree/main/app_db), register a MONGO db acocunt, create teh appropriate User and Documents collections, and add MONGOKEY (your access key) as an environmental variable.
 
 ## API Details
-All functions require a JSON input of the following format (Note: a subset of these fields may only need specification as outlined in the function documentation  below):
+The create method will turn a PDF into the following JSON structure. These fields can (other than UID, which must be provided separately) can be used during subsequent accesses
 <pre>
    {
-       "_id":/File/< File_ID >/>,
-       "UID":< User ID > 
+       "Name": < the file name extracted from the path >,
+       "path": < The file path as uploaded in the database >,
+       "UID":< User ID associated with file > 
        "Upload_Date":< YYYY-MM-DD >, 
        "File_Metadata":{
-           "Authors":[< author1 >,...], 
-           "File_Creation_Date":< YYYY-MM-DD >, 
-           "File_Source":< file_source >, "File_Tags":[< Tag1 >,...]
+           "Title":< Title extracted from PDF file >, 
+           "Author":< Author extracted from PDF file >, 
+           "Creator":< Creator extracted from PDF file >
         }, 
        "Text":{
            "Text":[< Paragraph1 >, ...],
