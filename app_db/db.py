@@ -38,7 +38,7 @@ def addDocument(document_input):
     document = copy.copy(document_input)  # Create a copy so don't update fields of original document
 
     # Query to determine if this document already exists in the DB
-    query = {"Name": document["Name"], "UID":  _getActiveUserID(document["UID"]), "Deleted": "False"}
+    query = {"Name": document["Name"], "UID": _getActiveUserID(document["UID"]), "Deleted": "False"}
 
     # Check if this document exists in the DB and if not, insert it
     if documents.count_documents(query) == 0:
@@ -51,19 +51,21 @@ def addDocument(document_input):
 
 
 # Retrieve a single document from the DB
-# @param<docobj>   A JSON object containing the UID and another valid identifier (id or Name) associated with the
-#                  document
+# @param<username>   A string containing the username of a user whose documents we wish to access
+# @param<docobj>   A JSON object containing a valid identifier (id or Name) associated with the document
 # @return          The document (as a JSON) if one is found and None otherwise
-def getDocument(docobj):
+def getDocument(username, docobj):
     ids = _validateDocObj(docobj)  # Validate that this json object has the correct identifiers for a query
 
-    # If no valid identifiers are passed, return None
-    if not ids:
+    UID = _getActiveUserID(username)  # Ensure we have a valid user in the DB to associate with this document
+
+    # If no valid identifiers or username is passed, return None
+    if not ids or UID is None:
         return None
 
     # Add valid identifiers to query
     query = dict()
-    query["UID"] = _getActiveUserID(docobj["UID"])  # Add internal UID to doc
+    query["UID"] = UID  # Add internal UID to doc
     query["Deleted"] = "False"  # Ensure we do not fetch deleted documents
     for identifier in ids:
         query[identifier] = docobj[identifier]
@@ -77,14 +79,15 @@ def getDocument(docobj):
 
 
 # Retrieve multiple documents belonging to a single user from the DB
-# @param<UID>   A string containing the username of a user who's documents we wish to access
+# @param<UID>   A string containing the username of a user whose documents we wish to access
 # @return       The documents (as a JSON) if atleast one is found and None otherwise
 def getDocuments(uid):
     documents = _getDocCollection()  # Get collection
 
-    query = {"UID": _getActiveUserID(uid), "Deleted": "False"}  # Set query parameters
+    UID = _getActiveUserID(uid)  # Retrieve UID associated with this file in DB
+    query = {"UID": UID, "Deleted": "False"}  # Set query parameters
 
-    if documents.count_documents(query) == 0:  # Ensure there are documents in the DB
+    if UID is None or documents.count_documents(query) == 0:  # Ensure there are documents in the DB
         return None
 
     doc = documents.find(query)  # find document(s)
@@ -93,21 +96,22 @@ def getDocuments(uid):
 
 
 # Update a document in DB
-# @param<idObj>  A JSON object containing the UID and another valid identifier (id or Name) associated with the
-#                document
+# @param<username>   A string containing the username of a user whose documents we wish to update
+# @param<idObj>  A JSON object containing a valid identifier (id or Name) associated with the document
 # @param<update> A JSON object containing the update to apply to the document
-# @return        The updated document (as a JSON)
-def updateDocument(idObj, update):
+# @return        The updated document (as a JSON) or None if the query is invalid
+def updateDocument(username, idObj, update):
     ids = _validateDocObj(idObj)  # Validate that this json object has the correct identifiers for a query
+    UID = _getActiveUserID(username)  # Retrieve UID associated with this file in DB
 
     # If no valid identifiers are passed, return None
-    if not ids:
+    if not ids or UID is None:
         return None
 
     # Add valid identifiers to query
     query = dict()
     query["Deleted"] = "False"  # Ensure we do not fetch deleted documents
-    query["UID"] = _getActiveUserID(idObj["UID"])  # Add internal UID
+    query["UID"] = UID  # Add internal UID
     for identifier in ids:
         query[identifier] = idObj[identifier]
 
@@ -119,24 +123,25 @@ def updateDocument(idObj, update):
         objcopy = copy.copy(idObj)  # Create a shallow copy to avoid mutating original object
         if "Name" in update:
             objcopy["Name"] = update["Name"]
-        obj = getDocument(objcopy)
+        obj = getDocument(username, objcopy)
         return obj
 
 
 # Mark a document in the DB as deleted
-# @param<idObj>  A JSON object containing the UID and another valid identifier (id or Name) associated with the
-#                document
-# @return        The number of documents updated
-def deleteDocument(idObj):
+# @param<username>  A string containing the username of a user whose documents we wish to delete
+# @param<idObj>  A JSON object containing a valid identifier (id or Name) associated with the document
+# @return        The number of documents marked as deleted
+def deleteDocument(username, idObj):
     ids = _validateDocObj(idObj)  # Validate that this json object has the correct identifiers for a query
+    UID = _getActiveUserID(username)  # Retrieve UID associated with this file in DB
 
     # If no valid identifiers are passed, return None
-    if not ids:
+    if not ids or UID is None:
         return None
 
     # Add valid identifiers to query
     query = dict()
-    query["UID"] = _getActiveUserID(idObj["UID"])
+    query["UID"] = UID
     query["Deleted"] = "False"  # Ensure we do not fetch deleted documents
     for identifier in ids:
         query[identifier] = idObj[identifier]
@@ -150,9 +155,15 @@ def deleteDocument(idObj):
 
 # Mark all documents associated with a username as deleted
 # @param<UID>   A string containing the username of a user who's documents we wish to mark as deleted
-# @return       The number of documents marked with a deleted flag
+# @return       The number of documents marked with a deleted flag or None if no m matching users are found
 def deleteAllUserDocs(username):
     documents = _getDocCollection()
+
+    UID = _getActiveUserID(username)  # Retrieve UID associated with this file in DB
+
+    if UID is None:  # Return None if no matching users found
+        return None
+
     query = {"UID": _getActiveUserID(username), "Deleted": "False"}
     deletedflag = {"$set": {"Deleted": "True"}}  # Set deleted flag on "deleted" document
     result = documents.update_many(query, deletedflag)
@@ -162,8 +173,6 @@ def deleteAllUserDocs(username):
 # Private helper method to ensure that a JSON has the correct fields to validate a document object
 def _validateDocObj(docobj):
     ret = []
-    if "UID" not in docobj:
-        return []
     for identifier in docIds:
         if identifier in docobj:
             ret.append(identifier)

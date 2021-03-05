@@ -121,6 +121,8 @@ def test_docs():
         "password": 123
     }
 
+    username = user["username"]
+
     # Begin by creating a valid user
     assert db.addUser(user) == 1
 
@@ -128,8 +130,8 @@ def test_docs():
     assert db.addDocument(document1) == 1
 
     # Test get Single Document
-    query = {'Name': "1012.pdf", "UID": "test2"}
-    q = json.loads(db.getDocument(query))
+    query = {'Name': "1012.pdf"}
+    q = json.loads(db.getDocument(username, query))
     assert q['File_Metadata']["Authors"][0] == "Osama"
 
     #  Test that we cannot re-insert the same document
@@ -139,26 +141,26 @@ def test_docs():
     assert db.addDocument(document2) == 1
 
     # Test get all docs belonging to UID "test"
-    q = json.loads(db.getDocuments("test2"))
-    w = json.loads(db.getUser("test2"))
+    q = json.loads(db.getDocuments(username))
+    w = json.loads(db.getUser(username))
     for item in q:
         assert item["UID"] == w["_id"]
 
     # Test modify document
-    query = {'Name': "1012.pdf", "UID": "test2"}
-    q = json.loads(db.updateDocument(query, modification))
+    query = {'Name': "1012.pdf"}
+    q = json.loads(db.updateDocument(username, query, modification))
     assert q['Text']['Text'] == ["Hello, this is another test", "Its terrible"]
 
     # Test delete document
-    query = {'Name': "1012.pdf", "UID": "test2"}
-    assert db.deleteDocument(query) == 1
+    query = {'Name': "1012.pdf"}
+    assert db.deleteDocument(username, query) == 1
 
     # Now reinsert document and test that deleting all documents belong to test returns correct deleted count
     assert db.addDocument(document1) == 1
-    assert db.deleteAllUserDocs("test2") == 2
+    assert db.deleteAllUserDocs(username) == 2
 
     # Clean up unit tests from DB by deleting user
-    delusers, deldocs = db.deleteUser("test2")
+    delusers, deldocs = db.deleteUser(username)
     assert delusers == 1
     assert deldocs == 0
 
