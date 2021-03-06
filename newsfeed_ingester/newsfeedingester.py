@@ -24,7 +24,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='%(asctime)s 
 #         If the query is not successful, returns an empty JSON
 def keyword_query(keywords):
     logging.info(f"{{Event: {ev.Event.KWordQuery_Initiated}, Target: {keywords}}}")
-    if keywords == None or type(keywords) != list:
+    if keywords is None or type(keywords) != list or keywords == []:
         logging.error(f"{{Event: {ev.Event.KWordQuery_Error}, Target: {keywords}}}")
         ret = []
         ret = json.dumps(ret)
@@ -66,7 +66,7 @@ def person_query(name):
 #         successful, returns an empty JSON
 def historical_query(year, month, keywords):
     logging.info(f"{{Event: {ev.Event.HistQuery_Initiated}, Target: {year, month, keywords}}}")
-    if type(year) != str or type(month) != str or keywords == None:
+    if type(year) != str or type(month) != str or type(keywords) != list or keywords is None or keywords == []:
         logging.error(f"{{Event: {ev.Event.HistQuery_Error}, Target: {year, month, keywords}}}")
         ret = []
         ret = json.dumps(ret)

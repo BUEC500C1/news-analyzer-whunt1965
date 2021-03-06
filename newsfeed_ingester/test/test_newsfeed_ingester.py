@@ -35,23 +35,23 @@ def test_keyword_query():
 @profile
 def test_person_query():
     #Valid Tests
-    Result = json.loads(person_query("Osama", "Alshaykh"))
+    Result = json.loads(person_query("Osama Alshaykh"))
     assert type(Result) == list
-    Result = json.loads(person_query("Javier", "Bardim"))
+    Result = json.loads(person_query("Javier Bardim"))
     assert type(Result) == list
 
     #Invalid Test
-    Result = json.loads(person_query("Hat", 1))
+    Result = json.loads(person_query(1))
     assert Result == []
-    Result = json.loads(person_query(["hats"], "Jones"))
+    Result = json.loads(person_query(["hats"]))
     assert Result == []
 
 @profile
 def test_historical_query():
     #Valid Tests
-    Result = json.loads(historical_query("1970", "June", "Oil"))
+    Result = json.loads(historical_query("1970", "June", ["Oil"]))
     assert type(Result) == list
-    Result = json.loads(historical_query("1980", "January", "Bonds"))
+    Result = json.loads(historical_query("1980", "January", ["Bonds"]))
     assert type(Result) == list
 
     #Invalid Test
