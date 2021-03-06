@@ -11,19 +11,20 @@ The file uploader module provides an API to securely upload a file into the data
     - As a developer, I want access to log-level information on each method for debugging and system analysis purposes
 
 ## Build Instructions
-This API can be utilized by simply cloning the repo (using git clone) and then using import file_uploader in whichever file needs to access the API.
+This API can be utilized by simply cloning the repo (using git clone) and then using import file_uploader in whichever file needs to access the API. Note: This module is linked to a database and will also require the database module to function. Please also clone [app_db](https://github.com/BUEC500C1/news-analyzer-whunt1965/tree/main/app_db), register a MONGO db acocunt, create teh appropriate User and Documents collections, and add MONGOKEY (your access key) as an environmental variable.
 
 ## API Details
-All functions require a JSON input of the following format (Note: a subset of these fields may only need specification as outlined in the function documentation  below):
+The create method will turn a PDF into the following JSON structure. These fields can (other than UID, which must be provided separately) can be used during subsequent accesses
 <pre>
    {
-       "_id":/File/< File_ID >/>,
-       "UID":< User ID > 
+       "Name": < the file name extracted from the path >,
+       "path": < The file path as uploaded in the database >,
+       "UID":< User ID associated with file > 
        "Upload_Date":< YYYY-MM-DD >, 
        "File_Metadata":{
-           "Authors":[< author1 >,...], 
-           "File_Creation_Date":< YYYY-MM-DD >, 
-           "File_Source":< file_source >, "File_Tags":[< Tag1 >,...]
+           "Title":< Title extracted from PDF file >, 
+           "Author":< Author extracted from PDF file >, 
+           "Creator":< Creator extracted from PDF file >
         }, 
        "Text":{
            "Text":[< Paragraph1 >, ...],
@@ -34,18 +35,30 @@ All functions require a JSON input of the following format (Note: a subset of th
         },
    }
 </pre>
-- create(file path): Uploads a file and creates an entry in the Database
-    - @param< file path > A path to a file to be uploaded into the database
-    - @return The JSON object along with a reponse code indeicating success or failure
-- read(JSON fileObject): Allows a user to read a file (or specific components) from the database
-    - @param< Fileobject > A JSON object containing the file ID and (optionally) the specific parameters to read
-    - @return If the read is successful returns the file (or specified subcomponents of a file) as a JSON object along with a Success code. Otherwise, returns the original object and an error code
-- update(JSON fileObject): Allows a user to update a file (or specific components) in the database
-    - @param< fileObject > A JSON object containing the file ID and the specific parameters to update
-    - @return If the update is successful returns updated file as a JSON object along with a Success code. Otherwise, returns the original object and an error code
-- delete(JSON fileObject): Allows a user to delete a file (or specific components) in the database
-    - @param< fileObject > If the delete is successful, returns the updated file (an empty object if the entire file is deleted) and a message code indicating success. Otherwise, returns the original object and an error code
-    - @return a message indicating success or failure
+- create(path, username): Uploads a file, parses it into JSON, and creates an entry in the Database
+    - @param< username > The username of the user creating an entry
+    - @param< path > A path to a file to be uploaded into the database
+    - @return If successful, returns the JSON version of the file and a success response code. Otherwise, returns the original parameters and an error code
+
+- read_one(fileobj, username): Accessor for a single file in the DB
+    - @param< username > A string containing the username of the user associated with the files
+    - @param< fileobj > A (stringified) JSON object containing fields from which the file can be referenced (eg, Title or _id)
+    - @return If the read is successful returns the file as a JSON object containing the file found along with a Success code. Otherwise, returns the original object, username, and an error code
+
+- read_many(username): Accessor for all files in the DB belonging to a single user
+    - @param< username > A string containing the username of the user associated with the files
+    - @return If the read is successful returns the file as a JSON object containing the files found along with a Success code. Otherwise, returns the username and an error code
+
+- update(username, identifier, update): Modifies a file in the DB
+    - @param< username > A string containing the username of the user associated with the file to update
+    - @param< identifier > A JSON object containing fields from which the file can be referenced (eg, Title or _id)
+    - @param< update > A JSON string object containing the specific parameters to update (eg, { "TEXT" \[ "TEXT" ] : { "some new text"})
+    - @return If the update is successful returns updated file as a JSON object along with a Success code. Otherwise, otherwise returns the original parameters and an error code
+
+- delete(username, myFileObj): Delete a file in the DB
+    - @param< username > A string containing the username of the user associated with the file
+    - @param< fileObj > A JSON object containing a unique identifier (eg file name or _id) associated with the file to delete.
+    - @return If the delete is successful, returns a success message and the number of files deleted. Otherwise, returns the original object and an error code
 
 ## Internal Details
 Below are a few internal details of the API stub implementation in response to requirements for this phase:
