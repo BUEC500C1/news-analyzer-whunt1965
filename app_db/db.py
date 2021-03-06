@@ -35,10 +35,15 @@ def _getDocCollection():
 # @return          1 if the document is successfully added and None otherwise
 def addDocument(document_input):
     documents = _getDocCollection()
+
+    UID = _getActiveUserID(document_input["UID"]) # Ensure we have a valid user in the DB to associate with this document
+    if UID is None:
+        return None
+
     document = copy.copy(document_input)  # Create a copy so don't update fields of original document
 
     # Query to determine if this document already exists in the DB
-    query = {"Name": document["Name"], "UID": _getActiveUserID(document["UID"]), "Deleted": "False"}
+    query = {"Name": document["Name"], "UID": UID, "Deleted": "False"}
 
     # Check if this document exists in the DB and if not, insert it
     if documents.count_documents(query) == 0:
@@ -73,6 +78,10 @@ def getDocument(username, docobj):
     query["Deleted"] = "False"  # Ensure we do not fetch deleted documents
 
     documents = _getDocCollection()
+
+    if documents.count_documents(query) == 0:  # Check if this document exists
+        return None
+
     doc = documents.find_one(query)  # find document(s)
     ret = dumps(doc, indent=2)  # convert to JSON
     return ret

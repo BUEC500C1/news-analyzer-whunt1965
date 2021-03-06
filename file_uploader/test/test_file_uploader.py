@@ -1,6 +1,8 @@
 # Tests for file uploader module
 from memory_profiler import profile
-from fileuploader import *
+
+from file_uploader import fileuploader as fup
+from app_db import db
 import tracemalloc
 import cProfile
 import re
@@ -10,288 +12,235 @@ import json
 # ==================
 # Start Tests
 # ==================
-valid = {
-    "_id":"/Files/12/123",
-    "UID":"Wiley",
-    "Upload_Date":"2021-02-17",
-    "File_Metadata": {
-        "Authors":["Osama"],
-        "File_Creation_Date": "1999-01-22",
-        "File_Source": "Wiley",
-        "File_Tags": ["Sports"],
-    },
-    "Text": {
-        "Text_ID": '/File/12/123/456',
-        "Text":["Hello, this is a test", "Its not a very good test"],
-        "Sentiment": [0, -10],
-        "Entity": [],
-        "Entity_Sentiment": [],
-        "Content_Classification": [],
-    },
-}
 
-valid2 = {
-    "_id":"/File/56/5678",
-    "UID":"Wiley",
-    "Upload_Date":"2020-04-17",
-    "File_Metadata": {
-        "Authors":["Sam Seaborn"],
-        "File_Creation_Date": "1997-04-22",
-        "File_Source": "The New York Times",
-        "File_Tags": ["Politics"],
-    },
-    "Text": {
-        "Text_ID": '/File/56/5678/289',
-        "Text":["Hello, this is a test again", "Its also not a very good test"],
-        "Sentiment": [],
-        "Entity": [],
-        "Entity_Sentiment": [],
-        "Content_Classification": [],
-    },
-}
+#Init tracemalloc
+def test_init():
+    tracemalloc.start()  # Start trace malloc
+    assert 1 == 1
 
-partial_valid_for_Read_and_Delete  = {
-    "_id":"/File/12/123",
-    "Text": {},
-}
-
-update_valid  = {
-    "_id":"/File/12/123",
-    "Text": {
-        "Text": ["New Stuff!", "and more new stuff!"]
-    },
-}
-
-expected_update_valid_output = {
-    "_id":"/File/12/123",
-    "UID":"Wiley",
-    "Upload_Date":"2021-02-17",
-    "File_Metadata": {
-        "Authors":["Osama"],
-        "File_Creation_Date": "1999-01-22",
-        "File_Source": 'Wiley',
-        "File_Tags": ["Sports"],
-    },
-    "Text": {
-        "Text_ID": "/File/12/123/456",
-        "Text":["Stuff", "and more new stuff"],
-        "Sentiment": [],
-        "Entity": [],
-        "Entity_Sentiment": [],
-        "Content_Classification": [],
-    },
-}
-
-expected_update_valid2_output = {
-    "_id":"/File/12/123",
-    "UID":"Wiley",
-    "Upload_Date":"2020-04-17",
-    "File_Metadata": {
-        "Authors":["Osama"],
-        "File_Creation_Date": "1999-01-22",
-        "File_Source": 'Wiley',
-        "File_Tags": ["Sports"],
-    },
-    "Text": {
-        "Text_ID": "/File/12/123/456",
-        "Text":["Stuff", "and more new stuff"],
-        "Sentiment": [],
-        "Entity": [],
-        "Entity_Sentiment": [],
-        "Content_Classification": [],
-    },
-}
-
-expected_partial_read_output = {
-        "Text_ID": "/File/12/123/456",
-        "Text":["Hello, this is a test", "Its not a very good test"],
-        "Sentiment": [0, -10],
-        "Entity": [],
-        "Entity_Sentiment": [],
-        "Content_Classification": [],
-}
-
-expected_partial_delete_output = {
-    "_id":"/File/12/123",
-    "Upload_Date":"2021-02-17",
-    "File_Metadata": {
-        "Authors":["Osama"],
-        "File_Creation_Date": "1999-01-22",
-        "File_Source": "Wiley",
-        "File_Tags": ["Sports"],
-    },
-    "Text": {
-        "Text_ID": "",
-        "Text":[],
-        "Sentiment": [],
-        "Entity": [],
-        "Entity_Sentiment": [],
-        "Content_Classification": [],
-    },
-}
-
-
-invalid = {
-    "_id":'',
-    "UID":"Wiley",
-    "Upload_Date":"2021-02-17",
-    "File_Metadata": {
-        "Authors":["Osama"],
-        "File_Creation_Date": "1999-01-22",
-        "File_Source": "Wiley",
-        "File_Tags": ["Sports"],
-    },
-    "Text": {
-        "Text_ID": '/File/12/123/456',
-        "Text": ["Hello, this is a test", "Its not a very good test"],
-        "Sentiment": [0, -10],
-        "Entity": [],
-        "Entity_Sentiment": [],
-        "Content_Classification": [],
-    },
-}
-
-invalid2 = {
-    "ID":"/File/56/5678",
-    "UID":"Wiley",
-    "Upload_Date":"2020-04-17",
-    "File_Metadata": {
-        "Authors":["Sam Seaborn"],
-        "File_Creation_Date": "1997-04-22",
-        "File_Source": "The New York Times",
-        "File_Tags": ["Politics"],
-    },
-    "Text": {
-        "Text_ID": '/File/56/5678/289',
-        "Text":["Hello, this is a test again", "Its also not a very good test"],
-        "Sentiment": [],
-        "Entity": [],
-        "Entity_Sentiment": [],
-        "Content_Classification": [],
-    },
-}
-
-#Create Tests
+# Create Tests
 # @profile
 def test_create():
-    l_valid = json.dumps(valid)
-    l_invalid = json.dumps(invalid)
-    l_valid2 = json.dumps(valid2)
-    l_invalid2 = json.dumps(invalid2)
+    # Create a test user to associate with files
+    user = {
+        "username": "test_fileuploader",
+        "email": "test_fileuploader@EC500.edu",
+        "password": 123
+    }
 
-    #Correct Creates
-    assert create(l_valid) == (l_valid, "200 OK")
-    assert create(l_valid2) == (l_valid2, "200 OK")
+    # Correct Creates
+    fileObj, code = fup.create(user["username"], "./test.pdf")
+    assert fileObj["path"] == "./test.pdf"
+    assert fileObj["Name"] == "test.pdf"
+    assert code == 200
 
-    #Invalid Create (no ID)
-    assert create(l_invalid) == (l_valid, "404 Not Found")
-    assert create(l_invalid2) == (l_valid2, "404 Not Found")
+    fileObj, code = fup.create(user["username"], "./test2.pdf")
+    assert fileObj["path"] == "./test2.pdf"
+    assert fileObj["Name"] == "test2.pdf"
+    assert code == 200
+
+    # Invalid Create (bad username)
+    un, path, msg, code = fup.create("InvalidUser", "./test2.pdf")
+    assert un == "InvalidUser"
+    assert path == "./test2.pdf"
+    assert msg == "This Document already exists!"
+    assert code == 400
+
+    # Invalid Create (bad file path)
+    un, path, msg, code = fup.create(user["username"], "./notafile.pdf")
+    assert un == user["username"]
+    assert path == "./notafile.pdf"
+    assert msg == "File could not be converted"
+    assert code == 400
+
+    # assert db.deleteAllUserDocs(user["username"]) == 2
+
 
 # @profile
 def test_read():
-    full_file = {"ID":"/File/12/123"}
-    l_full_file = json.dumps(full_file)
-    l_expected_partial_read_output = json.dumps(expected_partial_read_output)
-    l_partial_valid_for_Read_and_Delete = json.dumps(partial_valid_for_Read_and_Delete)
-    l_valid = json.dumps(valid)
+    # Ref to test user to associate with files
+    user = {
+        "username": "test_fileuploader",
+        "email": "test_fileuploader@EC500.edu",
+        "password": 123
+    }
 
-    full_file2= {"ID":"/File/56/5678"}
-    l_full_file2 = json.dumps(full_file2)
-    l_valid2 = json.dumps(valid2)
+    query1 = '{"Name": "test.pdf"}'
+    query2 = '{"Name": "test2.pdf"}'
 
-    #Read full File - Expect fail for now... until DB
-    assert read(l_full_file) == (l_valid, "200 OK")
-    #Read full File2 - Expect fail for now... until DB
-    assert read(l_full_file2) == (l_valid2, "200 OK")
-    #Read partial File - Expect to fail for now
-    assert read(l_partial_valid_for_Read_and_Delete) == (l_expected_partial_read_output, "200 OK")
+    # Valid read one op
+    obj, code = fup.read_one(user["username"], query1)
+    assert obj["path"] == "./test.pdf"
+    assert code == 200
+
+    # Valid read one op
+    obj, code = fup.read_one(user["username"], query2)
+    assert obj["path"] == "./test2.pdf"
+    assert code == 200
+
+    # Invalid read one op (bad params)
+    retuser, obj, msg, code = fup.read_one(user["username"], 7)
+    assert retuser == user["username"]
+    assert obj == 7
+    assert msg == "Invalid object (Non-JSON) for File Read Request"
+    assert code == 400
+
+    # Invalid read one op (bad query)
+    retuser, obj, msg, code = fup.read_one(user["username"], '{"Name": "notafile.pdf"}')
+    assert retuser == user["username"]
+    assert obj == '{"Name": "notafile.pdf"}'
+    assert msg == "File Not Found"
+    assert code == 404
+
+    # valid read many
+    w = json.loads(db.getUser(user["username"]))
+    result, code = fup.read_many(user["username"])
+    for item in result:
+        assert item["UID"] == w["_id"]
+    assert code == 200
+
+    # invalid read many
+    retuser, msg, code = fup.read_many("notauser")
+    assert retuser == "notauser"
+    assert msg == "Files Not Found"
+    assert code == 404
 
 
-    #Read Invalid File (no ID key)
-    invalid_file = {"ID":""}
-    l_invalid_file = json.dumps(invalid_file)
-    l_invalid = json.dumps(invalid)
-    assert read(l_invalid_file) == (l_invalid_file, "404 Not Found")
-
-    #Read Invalid File (Bad Key)
-    invalid_file = {"ID":"SSSSSS"}
-    l_invalid_file = json.dumps(invalid_file)
-    l_invalid = json.dumps(invalid)
-    assert read(l_invalid_file) == (l_invalid_file, "404 Not Found")
-
-
+# Update tests
 # @profile
 def test_update():
-    l_update_valid = json.dumps(update_valid)
-    l_expected_update_valid_output = json.dumps(expected_update_valid_output)
-    validupdate2 = {"ID":"/File/12/123", "Upload_Date":"2020-14-17"}
-    l_update_valid2 = json.dumps(validupdate2)
-    l_expected_update_valid2_output = json.dumps(expected_update_valid2_output)
+    # Ref to test user to associate with files
+    user = {
+        "username": "test_fileuploader",
+        "email": "test_fileuploader@EC500.edu",
+        "password": 123
+    }
 
+    # Valid Update Test 1
+    identifier = '{"Name":"test.pdf"}'
+    validupdate = '{"Upload_Date":"2020-12-17"}'
+    msg, obj, code = fup.update(user["username"], identifier, validupdate)
+    assert msg == "Update Successful"
+    assert obj["Upload_Date"] == "2020-12-17"
+    assert code == 200
 
-    #Valid updates, expect to fail until impl
-    assert update(l_update_valid) == (l_expected_update_valid_output, "200 OK")
-    assert update(l_update_valid2) == (l_expected_update_valid2_output, "200 OK")
+    # Valid Update Test 2
+    identifier = '{"Name":"test2.pdf"}'
+    validupdate = '{"File_Metadata": {"Authors": ["Jose"]}}'
+    msg, obj, code = fup.update(user["username"], identifier, validupdate)
+    assert msg == "Update Successful"
+    assert obj["File_Metadata"]["Authors"][0] == "Jose"
+    assert code == 200
 
+    # Invalid Update - bad params
+    identifier = 7
+    validupdate = '{"File_Metadata": {"Authors": ["Jose"]}]'
+    uname, idobj, updateobj, msg, code = fup.update(user["username"], identifier, validupdate)
+    assert uname == user["username"]
+    assert idobj == 7
+    assert updateobj == validupdate
+    assert msg == "Invalid Request parameters"
+    assert code == 400
 
-    #Invalid updates, expect fail until implement db
-    invalidupdate = {"ID":"/File/12/123", "Hat": 22}
-    l_invalidupdate = json.dumps(invalidupdate)
-    assert update(l_invalidupdate) == (l_invalidupdate, "404 Not Found")
+    #Invlalid Update - bad user
+    identifier = '{"Name":"test2.pdf"}'
+    validupdate = '{"File_Metadata": {"Authors": ["Jose"]}}'
+    uname, idobj, updateobj, msg, code = fup.update("badusername", identifier, validupdate)
+    assert uname == "badusername"
+    assert idobj == identifier
+    assert updateobj == validupdate
+    assert msg == "Could not complete your update"
+    assert code == 400
 
-    invalidupdate2 = {"ID":"", "Upload_Date":"2020-04-17"}
-    l_invalidupdate2 = json.dumps(invalidupdate2)
-    assert update(l_invalidupdate2) == (l_invalidupdate2, "404 Not Found")
 
 # @profile
 def test_delete():
-    l_partial_valid_for_Read_and_Delete = json.dumps(partial_valid_for_Read_and_Delete)
-    l_expected_partial_delete_output = json.dumps(partial_valid_for_Read_and_Delete)
-    invalid_delete = {"Text": 1234}
-    l_invalid_delete = json.dumps(invalid_delete)
+    # Ref to test user to associate with files
+    user = {
+        "username": "test_fileuploader",
+        "email": "test_fileuploader@EC500.edu",
+        "password": 123
+    }
 
-    #Valid delete -- expect fail until implementation
-    assert delete(l_partial_valid_for_Read_and_Delete) == (l_expected_partial_delete_output, "200 OK")
-    valid_delete= {"File_ID": "/File/123/1234"}
-    l_invalid_delete = json.dumps(invalid_delete)
-    valid_delete_out = json.dumps({})
-    assert delete(l_partial_valid_for_Read_and_Delete) == (valid_delete_out, "200 OK")
+    # Invalid Delete - bad file name
+    invalid_id = '{"Name":"nonexistentfile.pdf"}'
+    un, obj, msg, code = fup.delete(user["username"], invalid_id)
+    assert un == user["username"]
+    assert obj == invalid_id
+    assert msg == "Unable to delete file"
+    assert code == 404
 
-    #Invalid Deletes - Should work for now
-    assert delete(l_invalid_delete) == (l_invalid_delete, "404 Not Found")
-    invalid_delete = {}
-    l_invalid_delete = json.dumps(invalid_delete)
-    assert delete(l_invalid_delete) == (l_invalid_delete, "404 Not Found")
+    # Invalid Delete - bad request params
+    invalid_id = 7
+    un, obj, msg, code = fup.delete(user["username"], invalid_id)
+    assert un == user["username"]
+    assert obj == invalid_id
+    assert msg == "Invalid request Parameters"
+    assert code == 400
 
-# ==================
-# Ends Tests
-# ==================
+    # Valid Delete 1
+    idobj = '{"Name":"test.pdf"}'
+    msg, code = fup.delete(user["username"], idobj)
+    assert msg == "Deleted 1 documents"
+    assert code == 200
 
-# #Included to show output from CPU and mem usage
-def test_main():
-    main()
+    idobj2 = '{"Name":"test2.pdf"}'
+    msg, code = fup.delete(user["username"], idobj2)
+    assert msg == "Deleted 1 documents"
+    assert code == 200
 
-#Print header for report
-def printTitle():
-    print()
-    print("===FILE UPLOAD TESTS===")
-    print()
 
-# Include all test functions here to use memory and CPU profilers
-def main():
-    printTitle()
-    tracemalloc.start()# Start trace malloc
-    test_create()
-    test_read()
-    test_update()
-    test_delete()
-
-    # Get snapshot
+# If tests fail, ensure we still cleanup documents so new tests can run without insertion errors. Also print tracemalloc
+# results
+def test_cleanup():
+    # Ref to test user to associate with files
+    user = {
+        "username": "test_fileuploader",
+        "email": "test_fileuploader@EC500.edu",
+        "password": 123
+    }
+    db.deleteAllUserDocs(user["username"])
     snapshot = tracemalloc.take_snapshot()
     top_stats = snapshot.statistics('lineno')
     print("[ Top 5 ]")
     for stat in top_stats[:5]:
-        print(stat) 
+        print(stat)
+    assert 1 == 1
 
-if __name__ == '__main__':
-    cProfile.run('main()')
+
+
+
+#
+# # ==================
+# # Ends Tests
+# # ==================
+#
+# # #Included to show output from CPU and mem usage
+# def test_main():
+#     main()
+#
+# #Print header for report
+# def printTitle():
+#     print()
+#     print("===FILE UPLOAD TESTS===")
+#     print()
+#
+# # Include all test functions here to use memory and CPU profilers
+# def main():
+#     printTitle()
+#     tracemalloc.start()# Start trace malloc
+#     test_create()
+#     test_read()
+#     test_update()
+#     test_delete()
+#
+#     # Get snapshot
+#     snapshot = tracemalloc.take_snapshot()
+#     top_stats = snapshot.statistics('lineno')
+#     print("[ Top 5 ]")
+#     for stat in top_stats[:5]:
+#         print(stat)
+#
+# if __name__ == '__main__':
+#     cProfile.run('main()')
+

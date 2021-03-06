@@ -71,8 +71,12 @@ def _generateText(path):
         for i in range(0, numpages):
             page = pdf_file_obj.getPage(i)
             textstring = page.extractText()  # Extract all text from a single page
-            textstring = textstring.strip().split('\n \n') # Split into paragraphs as possible
+            textstring = textstring.strip().split('\n\n') # Split into paragraphs as possible
+            if len(textstring) == 1:
+                textstring = textstring[0].split('\n') # Further process if needed
             for j in range(len(textstring)):  # Append each paragraph to text list
+                if textstring[j].isspace():  # Exclude empty lines
+                    pass
                 textstring[j] = textstring[j].replace('\n', ' ')  # Remove excess newlines that may have been generated
                 text.append(textstring[j])
 
