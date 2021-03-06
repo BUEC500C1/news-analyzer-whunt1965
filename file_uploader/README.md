@@ -1,5 +1,7 @@
 # file_uploader
-The file uploader module provides an API to securely upload a file into the database, access the file (or its components), modify the file (or its components), and delete the file (or its components)
+The file uploader module provides an API to securely upload a file into the database, access the file (or its components), modify the file (or its components), and delete the file
+
+A link to a video demonstrating the uploader in action can be found [here]()
 
 ## User Stories
 - **End User (journalists):**
