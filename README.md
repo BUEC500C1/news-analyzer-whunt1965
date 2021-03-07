@@ -15,7 +15,7 @@ Currently, the file_uplaoder, newsfeed_ingester, and nlp_analyzer stubs are avai
     - **PUT**: the doc object is a JSON containing the document id and and any relevant fields of the document to update. The JSON of the updated document is returned.
     - **DELETE**: the doc object is a JSON of the following for {"doc_id":< id >) containing the document id to fetch. A success message is returned if the document is successfully deleted.
 - **newsfeed_ingester:**
-  - The newsfeed_ingester is available on port 8081 of the EC2 instance via the following URI *<EC2 Public IP>:8081/newsfeed/*. Specific functions of the API can be accessed at the following URIs via GET methods:
+  - The newsfeed_ingester is available on port 8081 of the EC2 instance via the following URI *<EC2 Public IP>:8081/newsfeed*. Specific functions of the API can be accessed at the following URIs via GET methods:
     - **Keyword Query** (URI: *< EC2 Public IP >:8081/newsfeed/< keywords >*). Here, keywords is a string of keywords to seach (with each keyword separated by an '&').
       - Example: *< EC2 Public IP >:8081/newsfeed/keyquery/kw1&kw2*
     - **Person Query** (URI: *< EC2 Public IP >:8081/newsfeed/personquery/< firstname&lastname >*): Here name is a string with the firstname and lastname separated by an '&'
@@ -23,8 +23,16 @@ Currently, the file_uplaoder, newsfeed_ingester, and nlp_analyzer stubs are avai
     - **Historical Query** (URI: *< EC2 Public IP >:8081/newsfeed/histquery/year=<year>&month=<month>&keywords=<keywords>*). Here, name year corresponds to a year (eg, 2020), month correponds to an English month name (eg, June), and keywords is a string of keywords to seach (with each keyword separated by an '&').
       - Example: *< EC2 Public IP >:8081/newsfeedhistquery/year=1998&month=June&keywords=arg1&arg2*
 - **nlp_analyzer:** 
-  - The nlp_analyzer is available on port 8080 of the EC2 instance via the following URI *<EC2 Public IP>:8081/nlp/*. Specific functions of the API can be accessed at the following URIs via GET methods:
-    - **Sentiment analysis** (URI: *< EC2 Public IP >:8081/nlp/sentiment/< text >*): Here, "text is a JSON object of the following form: {"TEXT":"some%20text%20here"} - Note: spaces must be indicated with a "%20" character
-    - **Entity Analysis** (URI: *< EC2 Public IP >:8081/nlp/entity/< text >*): Here, "text is a JSON object of the following form: {"TEXT":"some%20text%20here"} - Note: spaces must be indicated with a "%20" character
-    - **Entity Sentiment Analysis** (URI: *< EC2 Public IP >:8081/nlp/entitysentiment/< text >*): Here, "text is a JSON object of the following form: {"TEXT":"some%20text%20here"} - Note: spaces must be indicated with a "%20" character
-    - **Content Classification** (URI: *< EC2 Public IP >:8081/nlp/classifycontent/< text >*): Here, "text is a JSON object of the following form: {"TEXT":"some%20text%20here"} - Note: spaces must be indicated with a "%20" character
+  - The nlp_analyzer is available on port 8080 of the EC2 instance via the following URI *<EC2 Public IP>:8081/nlp*. Specific functions of the API can be accessed at the following URIs via GET methods:
+    - **Sentiment analysis** (URI: *< EC2 Public IP >:8081/nlp/sentiment/< string:text >*): Performs a sentiment analysis on a given text string
+        - @param< string:text > A text string (containing no '/' characters)
+        - @return a JSON object containing a single key ("Score") with a value of the associated sentiment score of the text
+    - **Entity Analysis** (URI: *< EC2 Public IP >:8081/nlp/entity/< string:text >*): Performs entity analysis on a given text string
+        - @param< string:text > A text string (containing no '/' characters)
+        - @return a JSON object containing a single key ("Entities") with a value of a list of entities extracted from the text
+    - **Entity Sentiment Analysis** (URI: *< EC2 Public IP >:8081/nlp/entitysentiment/< string:text >*): Performs both entity and sentiment analysis on a given text string
+        - @param< string:text > A text string (containing no '/' characters)
+        - @return a JSON object containing a single key ("Results") with a value of a list of key-value pair entries. Within the list, each entry contains two key-value pairs: {"Entity":< entity name >,"Score":< sentiment score associated with the entity >}
+    - **Content Classification** (URI: *< EC2 Public IP >:8081/nlp/classifycontent/< string:text >*): Performs content classification on a given string text
+        - @param< string:text > A text string (containing no '/' characters)
+        - @return a JSON object containing a single key ("Results") with a list of key-value pair entries. Within the list, each entry contains two key-value pairs: {"Content":< entity name >,"Score":< confidence score associated with the content >}

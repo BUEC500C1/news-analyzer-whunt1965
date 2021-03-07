@@ -60,15 +60,18 @@ def test_analyze_ent_sent():
 def test_classify_content():
     #Success Tests
     j = classify_content("John Doe is Great")
-    assert type(j) is dict
+    assert type(j) is list
+    if j:
+        assert type(j[0]) is dict
     j = classify_content("Tractors, Tractors, Tractors")
-    assert type(j) is dict
+    if j:
+        assert type(j[0]) is list
 
      #Failure Test
     k = classify_content(None)
-    assert k == {}
+    assert k == []
     k = classify_content(16)
-    assert k == {}
+    assert k == []
 
 # ==================
 # Ends Tests

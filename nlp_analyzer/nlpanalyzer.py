@@ -8,7 +8,6 @@ if __name__ == '__main__':
     import _nlpanalyzer_events as ev
 else:
     from nlp_analyzer import _nlpanalyzer_events as ev
-# import nlp_analyzer._nlpanalyzer_events as ev
 
 # Init logger
 logger = logging.getLogger(__name__)  # set module level logger
@@ -59,14 +58,15 @@ def analyze_entity_sentiment(text):
 
 
 # Performs content classification on a given text
-# @param<text> The text on which to perform content classification 
-# @return a dictionary of content categories (with associated confidence) that are found in the provided text (or an empty dictionary if failed)
+# @param<text> The text on which to perform content classification
+# @return a dictionary of content categories (with associated confidence) that are found in the provided text (or an
+#         empty dictionary if failed)
 def classify_content(text):
     logging.info(f"{{Event: {ev.Event.ClassifyContent_Initiated}, Target: {text}}}")
     if type(text) is str:
         # Insert call to helper
         logging.info(f"{{Event: {ev.Event.ClassifyContent_Success}, Target: {text}}}")
-        return {'/EC530': .9}  # Hard code for now
+        return [{"Content": "/EC530", "Score": .9}]  # Hard code for now
     else:
         logging.error(f"{{Event: {ev.Event.ClassifyContent_Error}, Target: {text}}}")
         return {}

@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, redirect, url_for, jsonify
 from flask_restful import Resource, Api
 import json
 
@@ -17,44 +17,61 @@ app = Flask(__name__)
 api = Api(app)
 
 
-class NLPSplash(Resource):
-    def get(self):
-        return """<h1>Welcome to the NLP Analyzer</h1>"""
+# Redirects to splash page for the NLP analyzer API
+@app.route('/')
+def index():
+    return redirect(url_for('NLP_splash'))
 
 
-class AnalyzeSentiment(Resource):
-    def get(self, text):
-        text = json.loads(text)
-        text = text["TEXT"]
-        return nlp.analyze_sentiment(text)
+# Renders a simple splash page for the NLP analyzer API
+@app.route('/nlp')
+def NLP_splash():
+    return """<h1>Welcome to the NLP Analyzer</h1>"""
 
 
-class AnalyzeEntity(Resource):
-    def get(self, text):
-        text = json.loads(text)
-        text = text["TEXT"]
-        return nlp.analyze_entity(text)
+# Performs a sentiment analysis on a given text string
+# @param<string:text> A text string (containing no '/' characters)
+# @return a JSON object containing a single key ("Score") with a value of the associated sentiment score of the text
+@app.route('/nlp/sentiment/<string:text>')
+def analyze_sentiment(text):
+    ret = dict()
+    ret["Score"] = nlp.analyze_sentiment(text)
+    return jsonify(ret)
 
 
-class AnalyzeEntitySentiment(Resource):
-    def get(self, text):
-        text = json.loads(text)
-        text = text["TEXT"]
-        return nlp.analyze_entity_sentiment(text)
+# Performs entity analysis on a given text string
+# @param<string:text> A text string (containing no '/' characters)
+# @return a JSON object containing a single key ("Entities") with a value of a list of entities extracted from the text
+@app.route('/nlp/entity/<string:text>')
+def analyze_entity(text):
+    ret = dict()
+    ret["Entities"] = nlp.analyze_entity(text)
+    return jsonify(ret)
 
 
-class ClassifyContent(Resource):
-    def get(self, text):
-        text = json.loads(text)
-        text = text["TEXT"]
-        return nlp.classify_content(text)
+# Performs both entity and sentiment analysis on a given text string
+# @param<string:text> A text string (containing no '/' characters)
+# @return a JSON object containing a single key ("Results") with a value of a list of key-value pair entries. Within
+#         the list, each entry contains two key-value pairs: {"Entity":<entity name>,"Score":<sentiment score
+#         associated with the entity>}
+@app.route('/nlp/entitysentiment/<string:text>')
+def analyze_entity_sentiment(text):
+    ret = dict()
+    ret["Results"] = nlp.analyze_entity_sentiment(text)
+    return ret
 
 
-api.add_resource(NLPSplash, '/nlp', '/')
-api.add_resource(AnalyzeSentiment, '/nlp/sentiment/<text>')
-api.add_resource(AnalyzeEntity, '/nlp/entity/<text>')
-api.add_resource(AnalyzeEntitySentiment, '/nlp/entitysentiment/<text>')
-api.add_resource(ClassifyContent, '/nlp/classifycontent/<text>')
+# Performs content classification on a given string text
+# @param<string:text> A text string (containing no '/' characters)
+# @return a JSON object containing a single key ("Results") with a list of key-value pair entries. Within
+#         the list, each entry contains two key-value pairs: {"Content":<entity name>,"Score":<confidence score
+#         associated with the content>}
+@app.route('/nlp/classifycontent/<string:text>')
+def classify_content(text):
+    ret = dict()
+    ret["Results"] = nlp.classify_content(text)
+    return ret
+
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
