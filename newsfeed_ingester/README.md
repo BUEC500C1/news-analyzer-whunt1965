@@ -19,15 +19,15 @@ This API can be utilized by simply cloning the repo (using git clone) and then u
 (Note: exact format of params to be fed into each method are TBD -- further API documentation to be provided with implementation)
 - keyword_query(List keywords): Queries newsfeed sources based on provided keyword(s) 
     - @param< keywords > a list of keyword(s) for the query 
-    - @return A JSON object containing a list of articles, including article title, URL, and summary. If the query is not successful, returns an empty JSON
+    - @return A list object containing a dictionary associated with each article, including article title, URL, and summary. If the query is not successful, returns an empty list
 - person_query(String year, String month, list keywords): Queries newsfeed sources based on provided first/last name 
     - @param< name > the name (first last, separated by a space) of the person to query
-    - @return A JSON object containing a list of articles, including article title, URL, and summary. If the query is not successful, returns an empty JSON
+    - @return A list object containing a dictionary associated with each article, including article title, URL, and summary. If the query is not successful, returns an empty list
 - historical_query(String firstname, String lastname): Queries newsfeed sources from a given month/year based on provided keyword
-    - @param< year > the year in which articles of interest would be published
-    - @param< month > the month in which articles of interest would be published
-    - @param< keywords > the list of keyword(s) to search
-    - @return A JSON object containing the results of the query including article names, summary, and link to article (or an error message indicating the analysis failed)
+    - @param< string:year > the year in which articles of interest would be published
+    - @param< string:month > the month in which articles of interest would be published
+    - @param< list:keywords > the list of keyword(s) to search
+    - @return A list object containing a dictionary associated with each article, including article title, URL, and summary. If the query is not successful, returns an empty list
 
 ## Internal Details
 Below are a few internal details of the API stub implementation in response to requirements for this phase:

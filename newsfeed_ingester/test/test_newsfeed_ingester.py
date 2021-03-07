@@ -18,48 +18,48 @@ def test_keyword_query():
 
     #Valid Tests
     validquery1 = "hats"
-    Result = json.loads(keyword_query(validquery1))
+    Result = keyword_query(validquery1)
     assert type(Result) == list
     validquery2 = ["hats", "bananas", "apples"]
-    Result = json.loads(keyword_query(validquery2))
+    Result = keyword_query(validquery2)
     assert type(Result) == list
 
     #Invalid Test
     invalidquery1 = 1
-    Result = json.loads(keyword_query(invalidquery1))
+    Result = keyword_query(invalidquery1)
     assert Result == []
     invalidquery2 = []
-    Result = json.loads(keyword_query(invalidquery2))
+    Result = keyword_query(invalidquery2)
     assert Result == []
 
 @profile
 def test_person_query():
     #Valid Tests
-    Result = json.loads(person_query("Osama Alshaykh"))
+    Result = person_query("Osama Alshaykh")
     assert type(Result) == list
-    Result = json.loads(person_query("Javier Bardim"))
+    Result = person_query("Javier Bardim")
     assert type(Result) == list
 
     #Invalid Test
-    Result = json.loads(person_query(1))
+    Result = person_query(1)
     assert Result == []
-    Result = json.loads(person_query(["hats"]))
+    Result = person_query(["hats"])
     assert Result == []
 
 @profile
 def test_historical_query():
     #Valid Tests
-    Result = json.loads(historical_query("1970", "June", ["Oil"]))
+    Result = historical_query("1970", "June", ["Oil"])
     assert type(Result) == list
-    Result = json.loads(historical_query("1980", "January", ["Bonds"]))
+    Result = historical_query("1980", "January", ["Bonds"])
     assert type(Result) == list
 
     #Invalid Test
-    Result = json.loads(historical_query(1, 2, "cow"))
+    Result = historical_query(1, 2, "cow")
     assert Result == []
-    Result = json.loads(historical_query(1980, "June", "Covid"))
+    Result = historical_query(1980, "June", "Covid")
     assert Result == []
-    Result = json.loads(historical_query("1980", "June", []))
+    Result = historical_query("1980", "June", [])
     assert Result == []
 
 # ==================
