@@ -4,6 +4,9 @@ ve/
 #Test file for import issues - local only
 imp_issues.py
 
+#test file folder
+file_uploader/files/*
+
 #Database configs
 db/
 

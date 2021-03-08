@@ -9,11 +9,29 @@ This repository contains an application designed to help journalists store and a
 Currently, the file_uplaoder, newsfeed_ingester, and nlp_analyzer stubs are available as REST API's hosted on an AWS EC2 instance. Details for each API are included below:
 
 - **file_uploader:**
-  - The file_uploader is available on port 80 of the EC2 instance and can be accessed via the following URI: *< EC2 Public IP >/FileUploader/< docobject >* with the doc object parameters as defined below based on the request type:
-    - **POST**: the doc object is a JSON object containing a path to a file {"PATH":< path >}to be uploaded/parsed (a JSON representation of the parsed file is returned).
-    - **GET**: the doc object a JSON of the following for {"doc_id":< id >) containing the document id to fetch. The document is returned as a JSON object
-    - **PUT**: the doc object is a JSON containing the document id and and any relevant fields of the document to update. The JSON of the updated document is returned.
-    - **DELETE**: the doc object is a JSON of the following for {"doc_id":< id >) containing the document id to fetch. A success message is returned if the document is successfully deleted.
+  - The file_uploader is available on port 80 of the EC2 instance and can be accessed via the following URI: *< EC2 Public IP >/FileUploader/* with the following URI schemes:
+    - **UPLOAD (POST)** (URI: *< EC2 Public IP >:80/FileUploader/upload*)
+        - This page provides a form for uploading a file. A user provide a username already registered in the DB and select a file to upload
+    - **READ (GET)**:
+        - **READ ALL FILES BELONGING TO A USER:** (URI: *< EC2 Public IP >:80/FileUploader/view/< string:username >*)
+            - @param< username > The username of the user in the DB whose files we want to view
+            - @return If the read is successful returns the file as a JSON object containing the files found along with a Success code. Otherwise, returns the username and an error code
+        - **READ A SINGLE FILE BELONGING TO A USER:** (URI: *< EC2 Public IP >:80/FileUploader/view/< string:username >/file=< string:fileobj >*)
+            - @param< username > The username of the user in the DB whose files we want to view
+            - @param<fileobj> A JSON object containing fields from which the file can be referenced (eg, Title or _id)
+            - @return If the read is successful returns the file as a JSON object containing the file found along with a Success code. Otherwise, returns the original object, username, and an error code
+            - Example: < EC2 Public IP >:80/FileUploader/view/test_fileuploader/file={"Name":"test.pdf"}
+    - **UPDATE** (URI: *< EC2 Public IP >:80/FileUploader/update/< string:username >/identifier=< string:identifier >&fileobj=< string:fileobj >*)
+        - @param< username > The username of the user in the DB whose files we want to view
+        - @param< identifier > A JSON object containing fields from which the file can be referenced (eg, Title or _id)
+        - @param< fileobj > A JSON object containing the specific parameters to update
+        - @return If the update is successful returns updated file as a JSON object along with a Success code. Otherwise, otherwise returns the original parameters and an error code
+        - Example: < EC2 Public IP >:80/FileUploader/update/test_fileuploader/identifier={"Name":"test.pdf"}&fileobj={"Name":"test4.pdf"}
+    - **DELETE**: (URI: *< EC2 Public IP >:80/FileUploader/delete/< string:username >/< string:identifier >*)
+        - @param< username > A string containing the username of the user associated with the files
+        - @param< identifier > A JSON object containing a unique identifier (eg file name or _id) associated with the file to delete
+        - @return If the delete is successful, returns a success message and the number of files deleted. Otherwise, returns the original object and an error code
+        - Example: < EC2 Public IP >:80/FileUploader/delete/test_fileuploader/identifier={"Name":"test4.pdf"}
 - **newsfeed_ingester:**
   - The newsfeed_ingester is available on port 8081 of the EC2 instance via the following URI *<EC2 Public IP>:8081/newsfeed*. Specific functions of the API can be accessed at the following URIs via GET methods:
     - **Keyword Query** (URI: *< EC2 Public IP >:8081/newsfeed/< string:keywords >*). Queries newsfeed sources based on provided keyword(s)
