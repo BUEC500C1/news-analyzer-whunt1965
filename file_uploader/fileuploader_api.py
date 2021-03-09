@@ -78,6 +78,10 @@ def upload_file():
             path = os.path.join(app.config['UPLOAD_FOLDER'], username, filename)
             file.save(path)
             ret = fu.create(username, path)
+            # leave now for debug, but consider using next step to delete stored pdf files after parse so we don't
+            # overload memory
+            # path = pathlib.Path(path)
+            # path.unlink()
             return jsonify(ret)
     return '''
     <!doctype html>

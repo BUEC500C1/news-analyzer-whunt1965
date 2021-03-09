@@ -34,7 +34,7 @@ Currently, the file_uplaoder, newsfeed_ingester, and nlp_analyzer stubs are avai
         - Example: < EC2 Public IP >:80/FileUploader/delete/test_fileuploader/identifier={"Name":"test4.pdf"}
 - **newsfeed_ingester:**
   - The newsfeed_ingester is available on port 8081 of the EC2 instance via the following URI *<EC2 Public IP>:8081/newsfeed*. Specific functions of the API can be accessed at the following URIs via GET methods:
-    - **Keyword Query** (URI: *< EC2 Public IP >:8081/newsfeed/< string:keywords >*). Queries newsfeed sources based on provided keyword(s)
+    - **Keyword Query** (URI: *< EC2 Public IP >:8081/newsfeed/keyquery/< string:keywords >*). Queries newsfeed sources based on provided keyword(s)
         - @param< string:keywords > A text string (containing no '/' characters) including a list of keywords separated by '&'
         - @return A JSON object containing a single key ("Results") with a value of a list of articles found by the query. Each entry in the list contains a JSON object with the following fields: "Title": < Article Title >, "URL": < Article URL >, "Summary": < Short summary of the article >
         - Example: *< EC2 Public IP >:8081/newsfeed/keyquery/'kw1&kw2'*
