@@ -12,7 +12,8 @@ docIds = ["_id", "Name"]
 # Initialize DB connection
 def _connect():
     key = os.getenv('MONGOKEY')
-    client = MongoClient(key)
+    client = MongoClient(key, connectTimeoutMS=30000, socketTimeoutMS=None, socketKeepAlive=True, connect=False,
+                         maxPoolsize=1)
     return client
 
 
