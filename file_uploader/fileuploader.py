@@ -27,9 +27,6 @@ logger = logging.getLogger(__name__)  # set module level logger
 logging.basicConfig(filename='example.log', format='%(asctime)s %(levelname)s %(message)s')
 
 
-# Re
-
-
 # Uploads a file, parses it into JSON, and creates an entry in the Database
 # @param<username> The username of the user creating an entry
 # @param<path> A path to a file to insert into the DB
@@ -37,37 +34,26 @@ logging.basicConfig(filename='example.log', format='%(asctime)s %(levelname)s %(
 # @return If successful, returns the JSON version of the file and a success response code. Otherwise, returns the
 #         original parameters and an error code
 def create(username, path, test=False):
+
     logging.info(f"{{Event: {ev.Event.CREATE_Initiated}, Target: {path, username}}}")
+
     fileObj = funcs.generateObject(path, username)
+
     if fileObj is None:
         logging.error(f"{{Event: {ev.Event.CREATE_Error}, Target: {path, username}}}")
         return username, path, "File could not be converted", 400
 
-    # Test Code begin
-    # As DB cannot connect to GitHub Action, this simulates accessing DB. Delete before production along with
-    # test param in func call
+    # Calls non-DB test function for tests. Remove this block and test param (test=False) before deployment
+    # Test block begin
     if test:
-        with open("fakedb.txt", 'a+') as infile:
-            # doclist = []
-            try:
-                data = json.load(infile)
-            except:
-                data = None
-            result = True
-            if data:
-                for item in data:
-                    item = json.loads(item)
-                    # doclist.append(item)
-                    if item["UID"] == fileObj["UID"] and item["Name"] == fileObj["Name"]:
-                        result = False
-                        break
-            if result:
-                # doclist.append(fileObj)
-                json.dump(fileObj, infile)
-                infile.write('\n')
+        result = _mockDBCreate(fileObj)
     else:
-        # End Test Code
         result = db.addDocument(fileObj)
+    # End test block
+
+    # Un-comment out below line for production
+    # result = db.addDocument(fileObj)
+
     if result:
         logging.info(f"{{Event: {ev.Event.CREATE_Success}, Target: {path, username}}}")
         return fileObj, 200
@@ -82,6 +68,7 @@ def create(username, path, test=False):
 # @return If the read is successful returns the file as a JSON object containing the file found along with a Success
 #         code. Otherwise, returns the original object, username, and an error code
 def read_one(username, fileobj, test=False):
+
     logging.info(f"{{Event: {ev.Event.READ_Initiated}, Target: {fileobj, username}}}")
 
     # Ensure JSON compatible input
@@ -94,29 +81,16 @@ def read_one(username, fileobj, test=False):
         logging.error(f"{{Event: {ev.Event.READ_Error}, Target: {fileobj, username}}}")
         return username, fileobj, "Invalid object (Non-JSON) for File Read Request", 400
 
-    # Remove if statement for production
-    if not test:
-        # Extract requested document from database
-        result = db.getDocument(username, db_fileobj)  # Extract requested document from database
-
-    #Remove block for production
+    # Calls non-DB test function for tests. Remove this block and test param (test=False) before deployment
+    # Test block begin
+    if test:
+        result = _mockDBReadOne(username, db_fileobj)
     else:
-        with open("fakedb.txt", 'r+') as infile:
-            data = []
-            result = None
-            try:
-                for jsonObj in infile:
-                    obj = json.loads(jsonObj)
-                    data.append(obj)
-                # data = list(json.load(infile))
-            except:
-                data = []
-            if data:
-                for item in data:
-                    # item = json.loads(item)
-                    if item["UID"] == username and item["Name"] == db_fileobj["Name"]:
-                        result = json.dumps(item)
-                        break
+        result = db.getDocument(username, db_fileobj)  # Extract requested document from database
+    # End test block
+
+    # Un-comment out below line for production
+    # result = db.getDocument(username, db_fileobj)  # Extract requested document from database
 
     # If database returns none, file is not in database
     if result is None or result == []:
@@ -136,30 +110,17 @@ def read_one(username, fileobj, test=False):
 def read_many(username, test=False):
     logging.info(f"{{Event: {ev.Event.READ_Initiated}, Target: {username}}}")
 
-    # Remove block for production
-    if not test:
+    # Calls non-DB test function for tests. Remove this block and test param (test=False) before deployment
+    # Test block begin
+    if test:
+        result = _mockDBReadMany(username)
+    else:
         # Extract requested document from database
         result = db.getDocuments(username)  # Extract requested documents from database
+    # End test block
 
-    #Remove block for production
-    else:
-        with open("fakedb.txt", 'r+') as infile:
-            data = []
-            result = []
-            try:
-                for jsonObj in infile:
-                    obj = json.loads(jsonObj)
-                    data.append(obj)
-            except:
-                data = []
-            if data:
-                for item in data:
-                    # item = json.loads(item)
-                    if item["UID"] == username:
-                        result.append(item)
-            if result:
-                result = json.dumps(result)
-    # End special pytest block
+    # Un-comment out below line for production
+    # result = db.getDocuments(username)  # Extract requested documents from database
 
     # If database returns none, there are no files in the database belonging to this user
     if result is None or result == []:
@@ -178,7 +139,7 @@ def read_many(username, test=False):
 # @param<update> A JSON string object containing the specific parameters to update
 # @return If the update is successful returns updated file as a JSON object along with a Success code
 #         Otherwise, otherwise returns the original parameters and an error code
-def update(username, identifier, updateObj):
+def update(username, identifier, updateObj, test=False):
     logging.info(f"{{Event: {ev.Event.UPDATE_Initiated}, Target: {username, identifier, updateObj}}}")
 
     # Ensure JSON compatible inputs
@@ -192,8 +153,17 @@ def update(username, identifier, updateObj):
         logging.error(f"{{Event: {ev.Event.READ_Error}, Target: {username, identifier, updateObj}}}")
         return username, identifier, updateObj, "Invalid Request parameters", 400
 
-    # Request to update file in database
-    result = db.updateDocument(username, db_identifier, db_update)
+    # Calls non-DB test function for tests. Remove this block and test param (test=False) before deployment
+    # Test block begin
+    if test:
+        result = _mockDBUpdate(username, db_identifier, db_update)
+    else:
+        # Extract requested document from database
+        result = db.updateDocument(username, db_identifier, db_update)
+    # End test block
+
+    # Un-comment out below line for production
+    # result = db.updateDocument(username, db_identifier, db_update)    # Request to update file in database
 
     # A none result means that the file could not be updated, return an error
     if result is None or result == []:
@@ -211,7 +181,7 @@ def update(username, identifier, updateObj):
 # @param<fileObj> A JSON object containing a unique identifier (eg file name or _id) associated with the file to delete.
 # @return If the delete is successful, returns a success message and the number of files deleted.
 #         Otherwise, returns the original object and an error code
-def delete(username, fileObj):
+def delete(username, fileObj, test=False):
     logging.info(f"{{Event: {ev.Event.DELETE_Initiated}, Target: {username, fileObj}}}")
 
     # Ensure JSON compatible inputs
@@ -224,12 +194,150 @@ def delete(username, fileObj):
         logging.error(f"{{Event: {ev.Event.DELETE_Error}, Target: {username, fileObj}}}")
         return username, fileObj, "Invalid request Parameters", 400
 
-    # Attempt to delete from DB
-    result = db.deleteDocument(username, db_fileObj)
-    if result <= 0 or result is None:
+    # Calls non-DB test function for tests. Remove this block and test param (test=False) before deployment
+    # Test block begin
+    if test:
+        result = _mockDBDelete(username, db_fileObj)
+    else:
+        # Extract requested document from database
+        result = db.deleteDocument(username, db_fileObj)
+    # End test block
+
+    # # Un-comment out below line for production
+    # result = db.deleteDocument(username, db_fileObj)     # Attempt to delete from DB
+    if result is None or result <= 0:
         logging.error(f"{{Event: {ev.Event.DELETE_Error}, Target: {username, fileObj}}}")
         return username, fileObj, "Unable to delete file", 404
 
     # Log success and return number of documents deleted
     logging.info(f"{{Event: {ev.Event.DELETE_Success}, Target: {username, fileObj}}}")
     return f"Deleted {result} documents", 200
+
+
+# ******************************************************************************************************
+# Functions for Github Action Tests
+#
+# Mimic the real functions but use a local file store instead of DB which cannot be accesses from GitHub actions since
+# IP of actions machine is indeterminate (and must be whitelisted to access DB)
+# ******************************************************************************************************
+
+# Mock DB function for document create
+def _mockDBCreate(fileObj):
+    with open("fakedb.txt", 'a+') as infile:
+        try:
+            data = json.load(infile)
+        except:
+            data = None
+        result = True
+        if data:
+            for item in data:
+                item = json.loads(item)
+                if item["UID"] == fileObj["UID"] and item["Name"] == fileObj["Name"]:
+                    result = False
+                    break
+        if result:
+            json.dump(fileObj, infile)
+            infile.write('\n')
+
+        return result
+
+
+# Mock DB function for read one
+def _mockDBReadOne(username, db_fileobj):
+    with open("fakedb.txt", 'r+') as infile:
+        data = []
+        result = None
+        try:
+            for jsonObj in infile:
+                obj = json.loads(jsonObj)
+                data.append(obj)
+        except:
+            data = []
+        if data:
+            for item in data:
+                # item = json.loads(item)
+                if item["UID"] == username and item["Name"] == db_fileobj["Name"]:
+                    result = json.dumps(item)
+                    break
+    return result
+
+
+# Mock DB function for read many
+def _mockDBReadMany(username):
+    with open("fakedb.txt", 'r+') as infile:
+        data = []
+        result = []
+        try:
+            for jsonObj in infile:
+                obj = json.loads(jsonObj)
+                data.append(obj)
+        except:
+            data = []
+        if data:
+            for item in data:
+                # item = json.loads(item)
+                if item["UID"] == username:
+                    result.append(item)
+        if result:
+            result = json.dumps(result)
+
+    return result
+
+def _mockDBUpdate(username, db_identifier, db_update):
+    data = []
+    result = None
+    with open("fakedb.txt", 'r+') as infile:
+    # with open("./test/fakedb.txt", 'r+') as infile:
+        try:
+            for jsonObj in infile:
+                obj = json.loads(jsonObj)
+                data.append(obj)
+        except:
+            data = []
+        if data:
+            for item in data:
+                if item["UID"] == username and item["Name"] == db_identifier["Name"]:
+                    # db_update = dict(db_update)
+                    for key in db_update.keys():
+                        item[key] = db_update[key]
+                    result = json.dumps(item)
+        if result:
+            infile.seek(0)
+            infile.truncate()
+            for item in data:
+                json.dump(item, infile)
+                infile.write('\n')
+
+    return result
+
+def _mockDBDelete(username, db_fileObj):
+    data = []
+    result = None
+    with open("fakedb.txt", 'r+') as infile:
+    # with open("./test/fakedb.txt", 'r+') as infile:
+        try:
+            for jsonObj in infile:
+                obj = json.loads(jsonObj)
+                data.append(obj)
+        except:
+            data = []
+        if data:
+            for item in data:
+                if item["UID"] == username and item["Name"] == db_fileObj["Name"]:
+                    data.remove(item)
+                    result = 1
+                    break
+        if result:
+            infile.seek(0)
+            infile.truncate()
+            for item in data:
+                json.dump(item, infile)
+                infile.write('\n')
+
+    return result
+
+
+
+
+
+

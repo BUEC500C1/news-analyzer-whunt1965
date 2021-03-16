@@ -111,106 +111,106 @@ def test_read():
     assert code == 404
 
 
-# # Update tests
-# # @profile
-# def test_update():
-#     # Ref to test user to associate with files
-#     user = {
-#         "username": "test_fileuploader",
-#         "email": "test_fileuploader@EC500.edu",
-#         "password": 123
-#     }
-#
-#     # Valid Update Test 1
-#     identifier = '{"Name":"test.pdf"}'
-#     validupdate = '{"Upload_Date":"2020-12-17"}'
-#     msg, obj, code = fup.update(user["username"], identifier, validupdate)
-#     assert msg == "Update Successful"
-#     assert obj["Upload_Date"] == "2020-12-17"
-#     assert code == 200
-#
-#     # Valid Update Test 2
-#     identifier = '{"Name":"test2.pdf"}'
-#     validupdate = '{"File_Metadata": {"Authors": ["Jose"]}}'
-#     msg, obj, code = fup.update(user["username"], identifier, validupdate)
-#     assert msg == "Update Successful"
-#     assert obj["File_Metadata"]["Authors"][0] == "Jose"
-#     assert code == 200
-#
-#     # Invalid Update - bad params
-#     identifier = 7
-#     validupdate = '{"File_Metadata": {"Authors": ["Jose"]}]'
-#     uname, idobj, updateobj, msg, code = fup.update(user["username"], identifier, validupdate)
-#     assert uname == user["username"]
-#     assert idobj == 7
-#     assert updateobj == validupdate
-#     assert msg == "Invalid Request parameters"
-#     assert code == 400
-#
-#     #Invlalid Update - bad user
-#     identifier = '{"Name":"test2.pdf"}'
-#     validupdate = '{"File_Metadata": {"Authors": ["Jose"]}}'
-#     uname, idobj, updateobj, msg, code = fup.update("badusername", identifier, validupdate)
-#     assert uname == "badusername"
-#     assert idobj == identifier
-#     assert updateobj == validupdate
-#     assert msg == "Could not complete your update"
-#     assert code == 400
-#
-#
-# # @profile
-# def test_delete():
-#     # Ref to test user to associate with files
-#     user = {
-#         "username": "test_fileuploader",
-#         "email": "test_fileuploader@EC500.edu",
-#         "password": 123
-#     }
-#
-#     # Invalid Delete - bad file name
-#     invalid_id = '{"Name":"nonexistentfile.pdf"}'
-#     un, obj, msg, code = fup.delete(user["username"], invalid_id)
-#     assert un == user["username"]
-#     assert obj == invalid_id
-#     assert msg == "Unable to delete file"
-#     assert code == 404
-#
-#     # Invalid Delete - bad request params
-#     invalid_id = 7
-#     un, obj, msg, code = fup.delete(user["username"], invalid_id)
-#     assert un == user["username"]
-#     assert obj == invalid_id
-#     assert msg == "Invalid request Parameters"
-#     assert code == 400
-#
-#     # Valid Delete 1
-#     idobj = '{"Name":"test.pdf"}'
-#     msg, code = fup.delete(user["username"], idobj)
-#     assert msg == "Deleted 1 documents"
-#     assert code == 200
-#
-#     idobj2 = '{"Name":"test2.pdf"}'
-#     msg, code = fup.delete(user["username"], idobj2)
-#     assert msg == "Deleted 1 documents"
-#     assert code == 200
-#
-#
-# # If tests fail, ensure we still cleanup documents so new tests can run without insertion errors. Also print tracemalloc
-# # results
-# def test_cleanup():
-#     # Ref to test user to associate with files
-#     user = {
-#         "username": "test_fileuploader",
-#         "email": "test_fileuploader@EC500.edu",
-#         "password": 123
-#     }
-#     db.deleteAllUserDocs(user["username"])
-#     snapshot = tracemalloc.take_snapshot()
-#     top_stats = snapshot.statistics('lineno')
-#     print("[ Top 5 ]")
-#     for stat in top_stats[:5]:
-#         print(stat)
-#     assert 1 == 1
+# Update tests
+# @profile
+def test_update():
+    # Ref to test user to associate with files
+    user = {
+        "username": "test_fileuploader",
+        "email": "test_fileuploader@EC500.edu",
+        "password": 123
+    }
+
+    # Valid Update Test 1
+    identifier = '{"Name":"test.pdf"}'
+    validupdate = '{"Upload_Date":"2020-12-17"}'
+    msg, obj, code = fup.update(user["username"], identifier, validupdate, test=True)
+    assert msg == "Update Successful"
+    assert obj["Upload_Date"] == "2020-12-17"
+    assert code == 200
+
+    # Valid Update Test 2
+    identifier = '{"Name":"test2.pdf"}'
+    validupdate = '{"File_Metadata": {"Authors": ["Jose"]}}'
+    msg, obj, code = fup.update(user["username"], identifier, validupdate, test=True)
+    assert msg == "Update Successful"
+    assert obj["File_Metadata"]["Authors"][0] == "Jose"
+    assert code == 200
+
+    # Invalid Update - bad params
+    identifier = 7
+    validupdate = '{"File_Metadata": {"Authors": ["Jose"]}]'
+    uname, idobj, updateobj, msg, code = fup.update(user["username"], identifier, validupdate, test=True)
+    assert uname == user["username"]
+    assert idobj == 7
+    assert updateobj == validupdate
+    assert msg == "Invalid Request parameters"
+    assert code == 400
+
+    #Invlalid Update - bad user
+    identifier = '{"Name":"test2.pdf"}'
+    validupdate = '{"File_Metadata": {"Authors": ["Jose"]}}'
+    uname, idobj, updateobj, msg, code = fup.update("badusername", identifier, validupdate, test=True)
+    assert uname == "badusername"
+    assert idobj == identifier
+    assert updateobj == validupdate
+    assert msg == "Could not complete your update"
+    assert code == 400
+
+
+# @profile
+def test_delete():
+    # Ref to test user to associate with files
+    user = {
+        "username": "test_fileuploader",
+        "email": "test_fileuploader@EC500.edu",
+        "password": 123
+    }
+
+    # Invalid Delete - bad file name
+    invalid_id = '{"Name":"nonexistentfile.pdf"}'
+    un, obj, msg, code = fup.delete(user["username"], invalid_id, test=True)
+    assert un == user["username"]
+    assert obj == invalid_id
+    assert msg == "Unable to delete file"
+    assert code == 404
+
+    # Invalid Delete - bad request params
+    invalid_id = 7
+    un, obj, msg, code = fup.delete(user["username"], invalid_id, test=True)
+    assert un == user["username"]
+    assert obj == invalid_id
+    assert msg == "Invalid request Parameters"
+    assert code == 400
+
+    # Valid Delete 1
+    idobj = '{"Name":"test.pdf"}'
+    msg, code = fup.delete(user["username"], idobj, test=True)
+    assert msg == "Deleted 1 documents"
+    assert code == 200
+
+    idobj2 = '{"Name":"test2.pdf"}'
+    msg, code = fup.delete(user["username"], idobj2, test=True)
+    assert msg == "Deleted 1 documents"
+    assert code == 200
+
+
+# If tests fail, ensure we still cleanup documents so new tests can run without insertion errors. Also print tracemalloc
+# results
+def test_cleanup():
+    # Ref to test user to associate with files
+    # user = {
+    #     "username": "test_fileuploader",
+    #     "email": "test_fileuploader@EC500.edu",
+    #     "password": 123
+    # }
+    # db.deleteAllUserDocs(user["username"])
+    snapshot = tracemalloc.take_snapshot()
+    top_stats = snapshot.statistics('lineno')
+    print("[ Top 5 ]")
+    for stat in top_stats[:5]:
+        print(stat)
+    assert 1 == 1
 
 
 
