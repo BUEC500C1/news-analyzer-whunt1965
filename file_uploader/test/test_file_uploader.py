@@ -6,12 +6,23 @@ from app_db import db
 import tracemalloc
 import json
 
+import os
+import pytest
+
+# @pytest.fixture
+# def rootdir():
+#     return os.path.dirname(os.path.abspath(__file__))
+
 
 # ==================
 # Start Tests
 # ==================
 
 file = "fakedb.txt"
+
+rootdir = os.path.dirname(os.path.abspath(__file__))
+pdf1 = os.path.join(rootdir, 'test.pdf')
+pdf2 = os.path.join(rootdir, 'test2.pdf')
 
 #Init tracemalloc
 def test_init():
@@ -21,7 +32,6 @@ def test_init():
     f.seek(0)
     f.truncate()
     f.close()
-    f = open("test.pdf")
     f.close()
     assert 1 == 1
 
@@ -36,13 +46,13 @@ def test_create():
     }
 
     # Correct Creates
-    fileObj, code = fup.create(user["username"], "test.pdf", test=True, fn=file)
-    assert fileObj["path"] == "test.pdf"
+    fileObj, code = fup.create(user["username"], pdf1, test=True, fn=file)
+    assert fileObj["path"] == pdf1
     assert fileObj["Name"] == "test.pdf"
     assert code == 200
 
-    fileObj, code = fup.create(user["username"], "test2.pdf", test=True, fn=file)
-    assert fileObj["path"] == "test2.pdf"
+    fileObj, code = fup.create(user["username"], pdf2, test=True, fn=file)
+    assert fileObj["path"] == pdf2
     assert fileObj["Name"] == "test2.pdf"
     assert code == 200
 
@@ -77,12 +87,12 @@ def test_read():
 
     # Valid read one op
     obj, code = fup.read_one(user["username"], query1, test=True, fn=file)
-    assert obj["path"] == "test.pdf"
+    assert obj["path"] == pdf1
     assert code == 200
 
     # Valid read one op
     obj, code = fup.read_one(user["username"], query2, test=True, fn=file)
-    assert obj["path"] == "test2.pdf"
+    assert obj["path"] == pdf2
     assert code == 200
 
     # Invalid read one op (bad params)
