@@ -11,11 +11,16 @@ import json
 # Start Tests
 # ==================
 
-file = './fakedb.txt'
+file = "fakedb.txt"
 
 #Init tracemalloc
 def test_init():
     tracemalloc.start()  # Start trace malloc
+    f = open(file, "w")
+    f.write('\n')
+    f.close()
+    f.seek(0)
+    f.truncate()
     assert 1 == 1
 
 # Create Tests
