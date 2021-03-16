@@ -11,6 +11,8 @@ import json
 # Start Tests
 # ==================
 
+file = './fakedb.txt'
+
 #Init tracemalloc
 def test_init():
     tracemalloc.start()  # Start trace malloc
@@ -27,12 +29,12 @@ def test_create():
     }
 
     # Correct Creates
-    fileObj, code = fup.create(user["username"], "./test.pdf", test=True)
+    fileObj, code = fup.create(user["username"], "./test.pdf", test=True, fn=file)
     assert fileObj["path"] == "./test.pdf"
     assert fileObj["Name"] == "test.pdf"
     assert code == 200
 
-    fileObj, code = fup.create(user["username"], "./test2.pdf", test=True)
+    fileObj, code = fup.create(user["username"], "./test2.pdf", test=True, fn=file)
     assert fileObj["path"] == "./test2.pdf"
     assert fileObj["Name"] == "test2.pdf"
     assert code == 200
@@ -45,7 +47,7 @@ def test_create():
     # assert code == 400
 
     # Invalid Create (bad file path)
-    un, path, msg, code = fup.create(user["username"], "./notafile.pdf", test=True)
+    un, path, msg, code = fup.create(user["username"], "./notafile.pdf", test=True, fn=file)
     assert un == user["username"]
     assert path == "./notafile.pdf"
     assert msg == "File could not be converted"
@@ -67,24 +69,24 @@ def test_read():
     query2 = '{"Name": "test2.pdf"}'
 
     # Valid read one op
-    obj, code = fup.read_one(user["username"], query1, test=True)
+    obj, code = fup.read_one(user["username"], query1, test=True, fn=file)
     assert obj["path"] == "./test.pdf"
     assert code == 200
 
     # Valid read one op
-    obj, code = fup.read_one(user["username"], query2, test=True)
+    obj, code = fup.read_one(user["username"], query2, test=True, fn=file)
     assert obj["path"] == "./test2.pdf"
     assert code == 200
 
     # Invalid read one op (bad params)
-    retuser, obj, msg, code = fup.read_one(user["username"], 7, test=True)
+    retuser, obj, msg, code = fup.read_one(user["username"], 7, test=True, fn=file)
     assert retuser == user["username"]
     assert obj == 7
     assert msg == "Invalid object (Non-JSON) for File Read Request"
     assert code == 400
 
     # Invalid read one op (bad query)
-    retuser, obj, msg, code = fup.read_one(user["username"], '{"Name": "notafile.pdf"}', test=True)
+    retuser, obj, msg, code = fup.read_one(user["username"], '{"Name": "notafile.pdf"}', test=True, fn=file)
     assert retuser == user["username"]
     assert obj == '{"Name": "notafile.pdf"}'
     assert msg == "File Not Found"
@@ -99,13 +101,13 @@ def test_read():
 
     # Valid read many for no DB connection
     w = user
-    result, code = fup.read_many(user["username"], test=True)
+    result, code = fup.read_many(user["username"], test=True, fn=file)
     for item in result:
         assert item["UID"] == w["username"]
     assert code == 200
 
     # invalid read many
-    retuser, msg, code = fup.read_many("notauser", test=True)
+    retuser, msg, code = fup.read_many("notauser", test=True, fn=file)
     assert retuser == "notauser"
     assert msg == "Files Not Found"
     assert code == 404
@@ -124,7 +126,7 @@ def test_update():
     # Valid Update Test 1
     identifier = '{"Name":"test.pdf"}'
     validupdate = '{"Upload_Date":"2020-12-17"}'
-    msg, obj, code = fup.update(user["username"], identifier, validupdate, test=True)
+    msg, obj, code = fup.update(user["username"], identifier, validupdate, test=True, fn=file)
     assert msg == "Update Successful"
     assert obj["Upload_Date"] == "2020-12-17"
     assert code == 200
@@ -132,7 +134,7 @@ def test_update():
     # Valid Update Test 2
     identifier = '{"Name":"test2.pdf"}'
     validupdate = '{"File_Metadata": {"Authors": ["Jose"]}}'
-    msg, obj, code = fup.update(user["username"], identifier, validupdate, test=True)
+    msg, obj, code = fup.update(user["username"], identifier, validupdate, test=True, fn=file)
     assert msg == "Update Successful"
     assert obj["File_Metadata"]["Authors"][0] == "Jose"
     assert code == 200
@@ -140,7 +142,7 @@ def test_update():
     # Invalid Update - bad params
     identifier = 7
     validupdate = '{"File_Metadata": {"Authors": ["Jose"]}]'
-    uname, idobj, updateobj, msg, code = fup.update(user["username"], identifier, validupdate, test=True)
+    uname, idobj, updateobj, msg, code = fup.update(user["username"], identifier, validupdate, test=True, fn=file)
     assert uname == user["username"]
     assert idobj == 7
     assert updateobj == validupdate
@@ -150,7 +152,7 @@ def test_update():
     #Invlalid Update - bad user
     identifier = '{"Name":"test2.pdf"}'
     validupdate = '{"File_Metadata": {"Authors": ["Jose"]}}'
-    uname, idobj, updateobj, msg, code = fup.update("badusername", identifier, validupdate, test=True)
+    uname, idobj, updateobj, msg, code = fup.update("badusername", identifier, validupdate, test=True, fn=file)
     assert uname == "badusername"
     assert idobj == identifier
     assert updateobj == validupdate
@@ -169,7 +171,7 @@ def test_delete():
 
     # Invalid Delete - bad file name
     invalid_id = '{"Name":"nonexistentfile.pdf"}'
-    un, obj, msg, code = fup.delete(user["username"], invalid_id, test=True)
+    un, obj, msg, code = fup.delete(user["username"], invalid_id, test=True, fn=file)
     assert un == user["username"]
     assert obj == invalid_id
     assert msg == "Unable to delete file"
@@ -177,7 +179,7 @@ def test_delete():
 
     # Invalid Delete - bad request params
     invalid_id = 7
-    un, obj, msg, code = fup.delete(user["username"], invalid_id, test=True)
+    un, obj, msg, code = fup.delete(user["username"], invalid_id, test=True, fn=file)
     assert un == user["username"]
     assert obj == invalid_id
     assert msg == "Invalid request Parameters"
@@ -185,12 +187,12 @@ def test_delete():
 
     # Valid Delete 1
     idobj = '{"Name":"test.pdf"}'
-    msg, code = fup.delete(user["username"], idobj, test=True)
+    msg, code = fup.delete(user["username"], idobj, test=True, fn=file)
     assert msg == "Deleted 1 documents"
     assert code == 200
 
     idobj2 = '{"Name":"test2.pdf"}'
-    msg, code = fup.delete(user["username"], idobj2, test=True)
+    msg, code = fup.delete(user["username"], idobj2, test=True, fn=file)
     assert msg == "Deleted 1 documents"
     assert code == 200
 

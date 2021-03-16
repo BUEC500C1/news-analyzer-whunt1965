@@ -30,10 +30,10 @@ logging.basicConfig(filename='example.log', format='%(asctime)s %(levelname)s %(
 # Uploads a file, parses it into JSON, and creates an entry in the Database
 # @param<username> The username of the user creating an entry
 # @param<path> A path to a file to insert into the DB
-# Remove Test param before production -- for unit tests only
+# Remove Test and fn params before production -- for unit tests only
 # @return If successful, returns the JSON version of the file and a success response code. Otherwise, returns the
 #         original parameters and an error code
-def create(username, path, test=False):
+def create(username, path, test=False, fn=None):
 
     logging.info(f"{{Event: {ev.Event.CREATE_Initiated}, Target: {path, username}}}")
 
@@ -43,10 +43,10 @@ def create(username, path, test=False):
         logging.error(f"{{Event: {ev.Event.CREATE_Error}, Target: {path, username}}}")
         return username, path, "File could not be converted", 400
 
-    # Calls non-DB test function for tests. Remove this block and test param (test=False) before deployment
+    # Calls non-DB test function for tests. Remove this block and test params (test=False, fn=None) before deployment
     # Test block begin
     if test:
-        result = _mockDBCreate(fileObj)
+        result = _mockDBCreate(fn, fileObj)
     else:
         result = db.addDocument(fileObj)
     # End test block
@@ -67,7 +67,7 @@ def create(username, path, test=False):
 # @param<fileobj> A (stringified) JSON object containing fields from which the file can be referenced (eg, Title or _id)
 # @return If the read is successful returns the file as a JSON object containing the file found along with a Success
 #         code. Otherwise, returns the original object, username, and an error code
-def read_one(username, fileobj, test=False):
+def read_one(username, fileobj, test=False, fn=None):
 
     logging.info(f"{{Event: {ev.Event.READ_Initiated}, Target: {fileobj, username}}}")
 
@@ -81,10 +81,10 @@ def read_one(username, fileobj, test=False):
         logging.error(f"{{Event: {ev.Event.READ_Error}, Target: {fileobj, username}}}")
         return username, fileobj, "Invalid object (Non-JSON) for File Read Request", 400
 
-    # Calls non-DB test function for tests. Remove this block and test param (test=False) before deployment
+    # Calls non-DB test function for tests. Remove this block and test params (test=False, fn=None) before deployment
     # Test block begin
     if test:
-        result = _mockDBReadOne(username, db_fileobj)
+        result = _mockDBReadOne(fn, username, db_fileobj)
     else:
         result = db.getDocument(username, db_fileobj)  # Extract requested document from database
     # End test block
@@ -107,13 +107,13 @@ def read_one(username, fileobj, test=False):
 # @param<username> A string containing the username of the user associated with the files
 # @return If the read is successful returns the file as a JSON object containing the files found along with a Success
 #         code. Otherwise, returns the username and an error code
-def read_many(username, test=False):
+def read_many(username, test=False, fn=None):
     logging.info(f"{{Event: {ev.Event.READ_Initiated}, Target: {username}}}")
 
-    # Calls non-DB test function for tests. Remove this block and test param (test=False) before deployment
+    # Calls non-DB test function for tests. Remove this block and test params (test=False, fn=None) before deployment
     # Test block begin
     if test:
-        result = _mockDBReadMany(username)
+        result = _mockDBReadMany(fn, username)
     else:
         # Extract requested document from database
         result = db.getDocuments(username)  # Extract requested documents from database
@@ -139,7 +139,7 @@ def read_many(username, test=False):
 # @param<update> A JSON string object containing the specific parameters to update
 # @return If the update is successful returns updated file as a JSON object along with a Success code
 #         Otherwise, otherwise returns the original parameters and an error code
-def update(username, identifier, updateObj, test=False):
+def update(username, identifier, updateObj, test=False, fn=None):
     logging.info(f"{{Event: {ev.Event.UPDATE_Initiated}, Target: {username, identifier, updateObj}}}")
 
     # Ensure JSON compatible inputs
@@ -153,10 +153,10 @@ def update(username, identifier, updateObj, test=False):
         logging.error(f"{{Event: {ev.Event.READ_Error}, Target: {username, identifier, updateObj}}}")
         return username, identifier, updateObj, "Invalid Request parameters", 400
 
-    # Calls non-DB test function for tests. Remove this block and test param (test=False) before deployment
+    # Calls non-DB test function for tests. Remove this block and test params (test=False, fn=None) before deployment
     # Test block begin
     if test:
-        result = _mockDBUpdate(username, db_identifier, db_update)
+        result = _mockDBUpdate(fn, username, db_identifier, db_update)
     else:
         # Extract requested document from database
         result = db.updateDocument(username, db_identifier, db_update)
@@ -181,7 +181,7 @@ def update(username, identifier, updateObj, test=False):
 # @param<fileObj> A JSON object containing a unique identifier (eg file name or _id) associated with the file to delete.
 # @return If the delete is successful, returns a success message and the number of files deleted.
 #         Otherwise, returns the original object and an error code
-def delete(username, fileObj, test=False):
+def delete(username, fileObj, test=False, fn=None):
     logging.info(f"{{Event: {ev.Event.DELETE_Initiated}, Target: {username, fileObj}}}")
 
     # Ensure JSON compatible inputs
@@ -194,10 +194,10 @@ def delete(username, fileObj, test=False):
         logging.error(f"{{Event: {ev.Event.DELETE_Error}, Target: {username, fileObj}}}")
         return username, fileObj, "Invalid request Parameters", 400
 
-    # Calls non-DB test function for tests. Remove this block and test param (test=False) before deployment
+    # Calls non-DB test function for tests. Remove this block and test params (test=False, fn=None) before deployment
     # Test block begin
     if test:
-        result = _mockDBDelete(username, db_fileObj)
+        result = _mockDBDelete(fn, username, db_fileObj)
     else:
         # Extract requested document from database
         result = db.deleteDocument(username, db_fileObj)
@@ -222,8 +222,8 @@ def delete(username, fileObj, test=False):
 # ******************************************************************************************************
 
 # Mock DB function for document create
-def _mockDBCreate(fileObj):
-    with open("fakedb.txt", 'a+') as infile:
+def _mockDBCreate(fn, fileObj):
+    with open(fn, 'a+') as infile:
         try:
             data = json.load(infile)
         except:
@@ -243,8 +243,8 @@ def _mockDBCreate(fileObj):
 
 
 # Mock DB function for read one
-def _mockDBReadOne(username, db_fileobj):
-    with open("fakedb.txt", 'r+') as infile:
+def _mockDBReadOne(fn, username, db_fileobj):
+    with open(fn, 'r+') as infile:
         data = []
         result = None
         try:
@@ -263,8 +263,8 @@ def _mockDBReadOne(username, db_fileobj):
 
 
 # Mock DB function for read many
-def _mockDBReadMany(username):
-    with open("fakedb.txt", 'r+') as infile:
+def _mockDBReadMany(fn, username):
+    with open(fn, 'r+') as infile:
         data = []
         result = []
         try:
@@ -283,10 +283,10 @@ def _mockDBReadMany(username):
 
     return result
 
-def _mockDBUpdate(username, db_identifier, db_update):
+def _mockDBUpdate(fn, username, db_identifier, db_update):
     data = []
     result = None
-    with open("fakedb.txt", 'r+') as infile:
+    with open(fn, 'r+') as infile:
     # with open("./test/fakedb.txt", 'r+') as infile:
         try:
             for jsonObj in infile:
@@ -310,10 +310,10 @@ def _mockDBUpdate(username, db_identifier, db_update):
 
     return result
 
-def _mockDBDelete(username, db_fileObj):
+def _mockDBDelete(fn, username, db_fileObj):
     data = []
     result = None
-    with open("fakedb.txt", 'r+') as infile:
+    with open(fn, 'r+') as infile:
     # with open("./test/fakedb.txt", 'r+') as infile:
         try:
             for jsonObj in infile:
