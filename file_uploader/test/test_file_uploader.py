@@ -21,6 +21,8 @@ def test_init():
     f.seek(0)
     f.truncate()
     f.close()
+    f = open("test.pdf")
+    f.close()
     assert 1 == 1
 
 # Create Tests
