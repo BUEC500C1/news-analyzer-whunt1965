@@ -4,6 +4,9 @@ ve/
 #Test file for import issues - local only
 imp_issues.py
 
+#Cache of GitHUb Action IPs
+GitHubIPS.txt
+
 #test file folder
 file_uploader/files/*
 

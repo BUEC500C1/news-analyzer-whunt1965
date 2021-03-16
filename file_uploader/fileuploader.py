@@ -3,10 +3,7 @@
 # See documentation for required input format
 # ======================================================
 import logging
-import sys
 import json
-
-import sys
 
 if __name__ == '__main__':
     import sys
@@ -36,15 +33,41 @@ logging.basicConfig(filename='example.log', format='%(asctime)s %(levelname)s %(
 # Uploads a file, parses it into JSON, and creates an entry in the Database
 # @param<username> The username of the user creating an entry
 # @param<path> A path to a file to insert into the DB
+# Remove Test param before production -- for unit tests only
 # @return If successful, returns the JSON version of the file and a success response code. Otherwise, returns the
 #         original parameters and an error code
-def create(username, path):
+def create(username, path, test=False):
     logging.info(f"{{Event: {ev.Event.CREATE_Initiated}, Target: {path, username}}}")
     fileObj = funcs.generateObject(path, username)
     if fileObj is None:
         logging.error(f"{{Event: {ev.Event.CREATE_Error}, Target: {path, username}}}")
         return username, path, "File could not be converted", 400
-    result = db.addDocument(fileObj)
+
+    # Test Code begin
+    # As DB cannot connect to GitHub Action, this simulates accessing DB. Delete before production along with
+    # test param in func call
+    if test:
+        with open("fakedb.txt", 'a+') as infile:
+            # doclist = []
+            try:
+                data = json.load(infile)
+            except:
+                data = None
+            result = True
+            if data:
+                for item in data:
+                    item = json.loads(item)
+                    # doclist.append(item)
+                    if item["UID"] == fileObj["UID"] and item["Name"] == fileObj["Name"]:
+                        result = False
+                        break
+            if result:
+                # doclist.append(fileObj)
+                json.dump(fileObj, infile)
+                infile.write('\n')
+    else:
+        # End Test Code
+        result = db.addDocument(fileObj)
     if result:
         logging.info(f"{{Event: {ev.Event.CREATE_Success}, Target: {path, username}}}")
         return fileObj, 200
@@ -58,7 +81,7 @@ def create(username, path):
 # @param<fileobj> A (stringified) JSON object containing fields from which the file can be referenced (eg, Title or _id)
 # @return If the read is successful returns the file as a JSON object containing the file found along with a Success
 #         code. Otherwise, returns the original object, username, and an error code
-def read_one(username, fileobj):
+def read_one(username, fileobj, test=False):
     logging.info(f"{{Event: {ev.Event.READ_Initiated}, Target: {fileobj, username}}}")
 
     # Ensure JSON compatible input
@@ -71,8 +94,29 @@ def read_one(username, fileobj):
         logging.error(f"{{Event: {ev.Event.READ_Error}, Target: {fileobj, username}}}")
         return username, fileobj, "Invalid object (Non-JSON) for File Read Request", 400
 
-    # Extract requested document from database
-    result = db.getDocument(username, db_fileobj)  # Extract requested document from database
+    # Remove if statement for production
+    if not test:
+        # Extract requested document from database
+        result = db.getDocument(username, db_fileobj)  # Extract requested document from database
+
+    #Remove block for production
+    else:
+        with open("fakedb.txt", 'r+') as infile:
+            data = []
+            result = None
+            try:
+                for jsonObj in infile:
+                    obj = json.loads(jsonObj)
+                    data.append(obj)
+                # data = list(json.load(infile))
+            except:
+                data = []
+            if data:
+                for item in data:
+                    # item = json.loads(item)
+                    if item["UID"] == username and item["Name"] == db_fileobj["Name"]:
+                        result = json.dumps(item)
+                        break
 
     # If database returns none, file is not in database
     if result is None or result == []:
@@ -89,11 +133,33 @@ def read_one(username, fileobj):
 # @param<username> A string containing the username of the user associated with the files
 # @return If the read is successful returns the file as a JSON object containing the files found along with a Success
 #         code. Otherwise, returns the username and an error code
-def read_many(username):
+def read_many(username, test=False):
     logging.info(f"{{Event: {ev.Event.READ_Initiated}, Target: {username}}}")
 
-    # Extract requested document from database
-    result = db.getDocuments(username)  # Extract requested documents from database
+    # Remove block for production
+    if not test:
+        # Extract requested document from database
+        result = db.getDocuments(username)  # Extract requested documents from database
+
+    #Remove block for production
+    else:
+        with open("fakedb.txt", 'r+') as infile:
+            data = []
+            result = []
+            try:
+                for jsonObj in infile:
+                    obj = json.loads(jsonObj)
+                    data.append(obj)
+            except:
+                data = []
+            if data:
+                for item in data:
+                    # item = json.loads(item)
+                    if item["UID"] == username:
+                        result.append(item)
+            if result:
+                result = json.dumps(result)
+    # End special pytest block
 
     # If database returns none, there are no files in the database belonging to this user
     if result is None or result == []:
@@ -125,7 +191,6 @@ def update(username, identifier, updateObj):
     except TypeError as E:
         logging.error(f"{{Event: {ev.Event.READ_Error}, Target: {username, identifier, updateObj}}}")
         return username, identifier, updateObj, "Invalid Request parameters", 400
-
 
     # Request to update file in database
     result = db.updateDocument(username, db_identifier, db_update)
@@ -168,12 +233,3 @@ def delete(username, fileObj):
     # Log success and return number of documents deleted
     logging.info(f"{{Event: {ev.Event.DELETE_Success}, Target: {username, fileObj}}}")
     return f"Deleted {result} documents", 200
-
-
-# # Simple debug for log -- to be deleted
-# if __name__ == '__main__':
-#     # print(create('./test/test.pdf', "Wiley"))
-#     # print(read('{"UID": "Wiley", "Name": "test.pdf"}'))
-#     # print(update('{"UID": "Wiley", "Name": "test.pdf"}', '{"Name": "test3.pdf"}'))
-#     print(read_many("Wiley"))
-#     # print(delete('{"UID": "Wiley", "Name": "test3.pdf"}'))
