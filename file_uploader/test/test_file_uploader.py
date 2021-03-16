@@ -34,13 +34,13 @@ def test_create():
     }
 
     # Correct Creates
-    fileObj, code = fup.create(user["username"], "./test.pdf", test=True, fn=file)
-    assert fileObj["path"] == "./test.pdf"
+    fileObj, code = fup.create(user["username"], "test.pdf", test=True, fn=file)
+    assert fileObj["path"] == "test.pdf"
     assert fileObj["Name"] == "test.pdf"
     assert code == 200
 
-    fileObj, code = fup.create(user["username"], "./test2.pdf", test=True, fn=file)
-    assert fileObj["path"] == "./test2.pdf"
+    fileObj, code = fup.create(user["username"], "test2.pdf", test=True, fn=file)
+    assert fileObj["path"] == "test2.pdf"
     assert fileObj["Name"] == "test2.pdf"
     assert code == 200
 
@@ -75,12 +75,12 @@ def test_read():
 
     # Valid read one op
     obj, code = fup.read_one(user["username"], query1, test=True, fn=file)
-    assert obj["path"] == "./test.pdf"
+    assert obj["path"] == "test.pdf"
     assert code == 200
 
     # Valid read one op
     obj, code = fup.read_one(user["username"], query2, test=True, fn=file)
-    assert obj["path"] == "./test2.pdf"
+    assert obj["path"] == "test2.pdf"
     assert code == 200
 
     # Invalid read one op (bad params)
