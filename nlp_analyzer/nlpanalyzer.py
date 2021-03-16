@@ -6,8 +6,10 @@ import sys
 
 if __name__ == '__main__':
     import _nlpanalyzer_events as ev
+    import _nlpanalyzer_helpers as helper
 else:
     from nlp_analyzer import _nlpanalyzer_events as ev
+    from nlp_analyzer import _nlpanalyzer_helpers as helpers
 
 # Init logger
 logger = logging.getLogger(__name__)  # set module level logger
@@ -21,9 +23,9 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='%(asctime)s 
 def analyze_sentiment(text):
     logging.info(f"{{Event: {ev.Event.AnalyzeSentiment_Initiated}, Target: {text}}}")
     if type(text) is str:
-        # Insert call to helper
+        result = helpers.analyzeSent(text)
         logging.info(f"{{Event: {ev.Event.AnalyzeSentiment_Success}, Target: {text}}}")
-        return 1  # hard coded result
+        return result
     else:
         logging.error(f"{{Event: {ev.Event.AnalyzeSentiment_Error}, Target: {text}}}")
         return ""
@@ -35,9 +37,9 @@ def analyze_sentiment(text):
 def analyze_entity(text):
     logging.info(f"{{Event: {ev.Event.AnalyzeEntity_Initiated}, Target: {text}}}")
     if type(text) is str:
-        # Insert call to helper
+        entities = helpers.analyzeEnt(text)
         logging.info(f"{{Event: {ev.Event.AnalyzeEntity_Success}, Target: {text}}}")
-        return ["John Cooper"]  # hard coded result
+        return entities
     else:
         logging.error(f"{{Event: {ev.Event.AnalyzeEntity_Error}, Target: {text}}}")
         return []
@@ -49,27 +51,31 @@ def analyze_entity(text):
 def analyze_entity_sentiment(text):
     logging.info(f"{{Event: {ev.Event.AnalyzeEntitySentiment_Initiated}, Target: {text}}}")
     if type(text) is str:
-        # Insert call to helper
+        results = helpers.analyzeEntSent(text)
         logging.info(f"{{Event: {ev.Event.AnalyzeEntitySentiment_Success}, Target: {text}}}")
-        return [{"Entity": "John Doe", "Score": 9}]
+        return results
     else:
         logging.error(f"{{Event: {ev.Event.AnalyzeEntitySentiment_Error}, Target: {text}}}")
         return []
 
 
 # Performs content classification on a given text
-# @param<text> The text on which to perform content classification
-# @return a dictionary of content categories (with associated confidence) that are found in the provided text (or an
-#         empty dictionary if failed)
+# @param<text> The text on which to perform content classification (containing no '/' characters and a minimum of 20
+#              words)
+# @return A list of dictionaries of content categories (with associated confidence) that are found in the provided text
+#         (or an empty list if failed)
 def classify_content(text):
     logging.info(f"{{Event: {ev.Event.ClassifyContent_Initiated}, Target: {text}}}")
     if type(text) is str:
-        # Insert call to helper
+        textlist = text.split()
+        if len(textlist) < 20: # Ensure Text contains at least 20 words
+            return []
+        results = helpers.classCont(text)
         logging.info(f"{{Event: {ev.Event.ClassifyContent_Success}, Target: {text}}}")
-        return [{"Content": "/EC530", "Score": .9}]  # Hard code for now
+        return results
     else:
         logging.error(f"{{Event: {ev.Event.ClassifyContent_Error}, Target: {text}}}")
-        return {}
+        return []
 
 
 # Simple debug for log -- to be deleted

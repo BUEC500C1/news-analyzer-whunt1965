@@ -62,10 +62,10 @@ def analyze_entity_sentiment(text):
 
 
 # Performs content classification on a given string text
-# @param<string:text> A text string (containing no '/' characters)
+# @param<string:text> A text string (containing no '/' characters and a minimum of 20 words)
 # @return a JSON object containing a single key ("Results") with a list of key-value pair entries. Within
-#         the list, each entry contains two key-value pairs: {"Content":<entity name>,"Score":<confidence score
-#         associated with the content>}
+#         the list, each entry contains two key-value pairs: {"Category":<category name>,"Score":<confidence score
+#         associated with the category>}
 @app.route('/nlp/classifycontent/<string:text>')
 def classify_content(text):
     ret = dict()

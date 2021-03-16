@@ -57,5 +57,5 @@ Currently, the file_uplaoder, newsfeed_ingester, and nlp_analyzer stubs are avai
         - @param< string:text > A text string (containing no '/' characters)
         - @return a JSON object containing a single key ("Results") with a value of a list of key-value pair entries. Within the list, each entry contains two key-value pairs: {"Entity":< entity name >,"Score":< sentiment score associated with the entity >}
     - **Content Classification** (URI: *< EC2 Public IP >:8081/nlp/classifycontent/< string:text >*): Performs content classification on a given string text
-        - @param< string:text > A text string (containing no '/' characters)
-        - @return a JSON object containing a single key ("Results") with a list of key-value pair entries. Within the list, each entry contains two key-value pairs: {"Content":< entity name >,"Score":< confidence score associated with the content >}
+        - @param< string:text > A text string (containing no '/' characters and a minimum of 20 words)
+        - @return a JSON object containing a single key ("Results") with a list of key-value pair entries. Within the list, each entry contains two key-value pairs: {"Category":< category name >,"Score":< confidence score associated with the category >}

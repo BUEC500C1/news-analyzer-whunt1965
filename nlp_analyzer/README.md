@@ -16,7 +16,6 @@ The nlp analyzer module provides an API to perform sentiment, enity, and syntax 
 This API can be utilized by simply cloning the repo (using git clone) and then using import nlp_analyzer in whichever file needs to access the API.
 
 ## API Details
-(Note: exact format of params to be fed into each method are TBD -- further API documentation to be provided with implementation)
 - analyze_sentiment(String text): Performs sentiment analysis on a given text
     - @param< text > A text string on which to perform sentiment analysis
     - @return A sentiment score on the provided text (or an empty string if failed)
@@ -27,8 +26,8 @@ This API can be utilized by simply cloning the repo (using git clone) and then u
     - @param< text > The text on which to perform entity-sentiment analysis
     - @return A list of entitities (and associated scores) from the inputted text (or an empty list if failed)
 - classify_content(String text): Performs content classification on a given text
-    - @param< text > The text on which to perform content classification 
-    - @return A dictionary of content categories (with associated confidence) that are found in the provided text (or an empty dictionary if failed)
+    - @param< text > The text on which to perform content classification (containing no '/' characters and a minimum of 20 words)
+    - @return A list of dictionaries of content categories (with associated confidence) that are found in the provided text (or an empty list if failed)
 
 ## Internal Details
 Below are a few internal details of the API stub implementation in response to requirements for this phase:
