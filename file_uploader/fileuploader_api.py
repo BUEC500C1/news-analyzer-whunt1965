@@ -132,7 +132,7 @@ def update_file(username, identifier, fileobj):
 #                    delete.
 # @return If the delete is successful, returns a success message and the number of files deleted.
 #         Otherwise, returns the original object and an error code
-@app.route('/FileUploader/delete/<string:username>/<string:identifier>', methods=['GET'])
+@app.route('/FileUploader/delete/<string:username>/identifier=<string:identifier>', methods=['GET'])
 def delete_file(username, identifier):
     return jsonify(fu.delete(username, identifier))
 
