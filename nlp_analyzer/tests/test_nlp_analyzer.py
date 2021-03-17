@@ -10,9 +10,9 @@ from nlp_analyzer import nlpanalyzer as np
 # Start Tests
 # ==================
 
-# Dummy test to test workflow
-@profile
 def test_analyze_sent():
+    printTitle()
+    tracemalloc.start()  # Start trace malloc
 
     #Valid Tests
     j = np.analyze_sentiment("text")
@@ -26,8 +26,16 @@ def test_analyze_sent():
     k = np.analyze_sentiment([])  # Not a string
     assert k == ""
 
-@profile
+    # Get snapshot
+    snapshot = tracemalloc.take_snapshot()
+    top_stats = snapshot.statistics('lineno')
+    print("[ Top 5 ]")
+    for stat in top_stats[:5]:
+        print(stat)
+
+
 def test_analyze_ent():
+    tracemalloc.start()  # Start trace malloc
 
     #Success Tests
     j = np.analyze_entity("John Kerry is Great")
@@ -45,8 +53,17 @@ def test_analyze_ent():
     k = np.analyze_entity(None)  # Not a string
     assert k == []
 
-@profile
+    # Get snapshot
+    snapshot = tracemalloc.take_snapshot()
+    top_stats = snapshot.statistics('lineno')
+    print("[ Top 5 ]")
+    for stat in top_stats[:5]:
+        print(stat)
+
+
 def test_analyze_ent_sent():
+
+    tracemalloc.start()  # Start trace malloc
 
     #Success Tests
     j = np.analyze_entity_sentiment("John Kerry is Great")
@@ -64,8 +81,18 @@ def test_analyze_ent_sent():
     k = np.analyze_entity_sentiment({"Hello"})  # Not a string
     assert k == []
 
-@profile
+    # Get snapshot
+    snapshot = tracemalloc.take_snapshot()
+    top_stats = snapshot.statistics('lineno')
+    print("[ Top 5 ]")
+    for stat in top_stats[:5]:
+        print(stat)
+
+
 def test_classify_content():
+
+    tracemalloc.start()  # Start trace malloc
+
     #Success Tests
     text = "I hate Bruce Willis. But I love Brad Pitt and I feel very strongly about Claude Van Damme. That is all " \
            "I want to say"
@@ -88,29 +115,6 @@ def test_classify_content():
     k = np.classify_content(16)  # Not a string
     assert k == []
 
-# ==================
-# Ends Tests
-# ==================
-
-#Included to show output from CPU and mem usage
-def test_main():
-    main()
-
-#Print header for report
-def printTitle():
-    print()
-    print("===NLP ANALYZER TESTS===")
-    print()
-
-# Include all test functions here to use memory and CPU profilers
-def main():
-    printTitle()
-    tracemalloc.start()# Start trace malloc
-    test_analyze_sent()
-    test_analyze_ent()
-    test_analyze_ent_sent()
-    test_classify_content()
-
     # Get snapshot
     snapshot = tracemalloc.take_snapshot()
     top_stats = snapshot.statistics('lineno')
@@ -118,5 +122,13 @@ def main():
     for stat in top_stats[:5]:
         print(stat)
 
-if __name__ == '__main__':
-    cProfile.run('main()')
+# ==================
+# Ends Tests
+# ==================
+
+
+#Print header for report
+def printTitle():
+    print()
+    print("===NLP ANALYZER TESTS===")
+    print()

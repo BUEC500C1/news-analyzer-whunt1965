@@ -37,6 +37,7 @@ jobs:
     - name: Test with pytest
       env:
         MONGOKEY: ${{ secrets.MONGOKEY }}
+        NYT: ${{ secrets.NYT }}
       run: |
         coverage run -m pytest -s --import-mode=importlib
     - name: Show coverage report

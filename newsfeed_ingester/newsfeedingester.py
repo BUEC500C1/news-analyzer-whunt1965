@@ -18,7 +18,7 @@ import json
 # Init logger
 logger = logging.getLogger(__name__)  # set module level logger
 # configure logging -- note: set to std:out for debug
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s')
+logging.basicConfig(filename='newsfeed.log', level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s')
 
 
 # Queries newsfeed sources based on provided keyword(s)
@@ -31,9 +31,8 @@ def keyword_query(keywords):
         logging.error(f"{{Event: {ev.Event.KWordQuery_Error}, Target: {keywords}}}")
         return []
     else:
-        # Insert call to keyword_query helper
-        logging.info(f"{{Event: {ev.Event.KWordQuery_Success}, Target: {keywords}}}")
         ret = helpers.kqueryhelper(keywords)
+        logging.info(f"{{Event: {ev.Event.KWordQuery_Success}, Target: {keywords}}}")
         return ret
 
 
@@ -47,9 +46,8 @@ def person_query(name):
         logging.error(f"{{Event: {ev.Event.PersonQuery_Error}, Target: {name}}}")
         return []
     else:
-        # Insert call to keyword_query helper
-        logging.info(f"{{Event: {ev.Event.PersonQuery_Success}, Target: {name}}}")
         ret = helpers.pqueryhelper(name)
+        logging.info(f"{{Event: {ev.Event.PersonQuery_Success}, Target: {name}}}")
         return ret
 
 
@@ -68,17 +66,16 @@ def historical_query(year, month, keywords):
         try:
             month = int(month)
             year = int(year)
-            if 0 < month < 13 and year < datetime.datetime.now().year:
-                ret = helpers.histqueryhelper(year, month, keywords)
-            elif year == datetime.datetime.now().year and month <= datetime.datetime.now().month:
-                ret = helpers.histqueryhelper(year, month, keywords)
-            else:
-                logging.error(f"{{Event: {ev.Event.HistQuery_Error}, Target: {year, month, keywords}}}")
-                return []
-        except:
+        except ValueError as E:
             logging.error(f"{{Event: {ev.Event.HistQuery_Error}, Target: {year, month, keywords}}}")
             return []
-        # Insert call to keyword_query helper
+        if 0 < month < 13 and year < datetime.datetime.now().year:
+            ret = helpers.histqueryhelper(year, month, keywords)
+        elif year == datetime.datetime.now().year and month <= datetime.datetime.now().month:
+            ret = helpers.histqueryhelper(year, month, keywords)
+        else:
+            logging.error(f"{{Event: {ev.Event.HistQuery_Error}, Target: {year, month, keywords}}}")
+            return []
         logging.info(f"{{Event: {ev.Event.HistQuery_Success}, Target: {year, month, keywords}}}")
         return ret
 

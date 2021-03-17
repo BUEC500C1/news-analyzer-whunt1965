@@ -24,7 +24,7 @@ else:
 # Init logger
 logger = logging.getLogger(__name__)  # set module level logger
 # configure logging -- note: set to std:out for debug
-logging.basicConfig(filename='example.log', format='%(asctime)s %(levelname)s %(message)s')
+logging.basicConfig(filename='fileuploader.log', format='%(asctime)s %(levelname)s %(message)s')
 
 
 # Uploads a file, parses it into JSON, and creates an entry in the Database

@@ -20,7 +20,7 @@ pdf2 = os.path.join(rootdir, 'test2.pdf')
 
 #Init tracemalloc
 def test_init():
-    tracemalloc.start()  # Start trace malloc
+    printTitle()
     f = open(file, "w")
     f.write('\n')
     f.seek(0)
@@ -30,8 +30,10 @@ def test_init():
     assert 1 == 1
 
 # Create Tests
-# @profile
 def test_create():
+
+    tracemalloc.start()  # Start trace malloc
+
     # Create a test user to associate with files
     user = {
         "username": "test_fileuploader",
@@ -64,11 +66,19 @@ def test_create():
     assert msg == "File could not be converted"
     assert code == 400
 
-    # assert db.deleteAllUserDocs(user["username"]) == 2
+    # Get snapshot
+    snapshot = tracemalloc.take_snapshot()
+    top_stats = snapshot.statistics('lineno')
+    print("[ Top 5 ]")
+    for stat in top_stats[:5]:
+        print(stat)
 
 
-# @profile
+# Read Tests
 def test_read():
+
+    tracemalloc.start()  # Start trace malloc
+
     # Ref to test user to associate with files
     user = {
         "username": "test_fileuploader",
@@ -123,10 +133,19 @@ def test_read():
     assert msg == "Files Not Found"
     assert code == 404
 
+    # Get snapshot
+    snapshot = tracemalloc.take_snapshot()
+    top_stats = snapshot.statistics('lineno')
+    print("[ Top 5 ]")
+    for stat in top_stats[:5]:
+        print(stat)
+
 
 # Update tests
-# @profile
 def test_update():
+
+    tracemalloc.start()  # Start trace malloc
+
     # Ref to test user to associate with files
     user = {
         "username": "test_fileuploader",
@@ -170,9 +189,19 @@ def test_update():
     assert msg == "Could not complete your update"
     assert code == 400
 
+    # Get snapshot
+    snapshot = tracemalloc.take_snapshot()
+    top_stats = snapshot.statistics('lineno')
+    print("[ Top 5 ]")
+    for stat in top_stats[:5]:
+        print(stat)
 
-# @profile
+
+# Delete Tests
 def test_delete():
+
+    tracemalloc.start()  # Start trace malloc
+
     # Ref to test user to associate with files
     user = {
         "username": "test_fileuploader",
@@ -207,58 +236,24 @@ def test_delete():
     assert msg == "Deleted 1 documents"
     assert code == 200
 
-
-# If tests fail, ensure we still cleanup documents so new tests can run without insertion errors. Also print tracemalloc
-# results
-def test_cleanup():
-    # Ref to test user to associate with files
-    # user = {
-    #     "username": "test_fileuploader",
-    #     "email": "test_fileuploader@EC500.edu",
-    #     "password": 123
-    # }
-    # db.deleteAllUserDocs(user["username"])
+    # Get snapshot
     snapshot = tracemalloc.take_snapshot()
     top_stats = snapshot.statistics('lineno')
     print("[ Top 5 ]")
     for stat in top_stats[:5]:
         print(stat)
-    assert 1 == 1
 
 
 
 
-#
-# # ==================
-# # Ends Tests
-# # ==================
-#
-# # #Included to show output from CPU and mem usage
-# def test_main():
-#     main()
-#
-# #Print header for report
-# def printTitle():
-#     print()
-#     print("===FILE UPLOAD TESTS===")
-#     print()
-#
-# # Include all test functions here to use memory and CPU profilers
-# def main():
-#     printTitle()
-#     tracemalloc.start()# Start trace malloc
-#     test_create()
-#     test_read()
-#     test_update()
-#     test_delete()
-#
-#     # Get snapshot
-#     snapshot = tracemalloc.take_snapshot()
-#     top_stats = snapshot.statistics('lineno')
-#     print("[ Top 5 ]")
-#     for stat in top_stats[:5]:
-#         print(stat)
-#
-# if __name__ == '__main__':
-#     cProfile.run('main()')
+# ==================
+# Ends Tests
+# ==================
+
+#Print header for report
+def printTitle():
+    print()
+    print("===FILE UPLOAD TESTS===")
+    print()
+
 

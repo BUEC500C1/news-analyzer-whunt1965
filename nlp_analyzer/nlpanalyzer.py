@@ -14,7 +14,7 @@ else:
 # Init logger
 logger = logging.getLogger(__name__)  # set module level logger
 # configure logging -- note: set to std:out for debug
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s')
+logging.basicConfig(filename='nlp.log', level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s')
 
 
 # Performs sentiment analysis on a given text
