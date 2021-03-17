@@ -19,15 +19,15 @@ This API can be utilized by simply cloning the repo (using git clone) and then u
 (Note: exact format of params to be fed into each method are TBD -- further API documentation to be provided with implementation)
 - keyword_query(List keywords): Queries newsfeed sources based on provided keyword(s) 
     - @param< keywords > a list of keyword(s) for the query 
-    - @return A list object containing a dictionary associated with each article, including article title, URL, and summary. If the query is not successful, returns an empty list
+    - @return A list of articles containing a dictionary associated with each article, including article summary and url. If the query is not successful, returns an empty list
 - person_query(String year, String month, list keywords): Queries newsfeed sources based on provided first/last name 
     - @param< name > the name (first last, separated by a space) of the person to query
-    - @return A list object containing a dictionary associated with each article, including article title, URL, and summary. If the query is not successful, returns an empty list
+    - @return A list of articles containing a dictionary associated with each article, including article summary and url. If the query is not successful, returns an empty list
 - historical_query(String firstname, String lastname): Queries newsfeed sources from a given month/year based on provided keyword
-    - @param< string:year > the year in which articles of interest would be published
-    - @param< string:month > the month in which articles of interest would be published
+    - @param< string:year > the year (as a numerical string, eg '1998') in which articles of interest would be published
+    - @param< string:month > the month (as a numerical string, eg '12') in which articles of interest would be published
     - @param< list:keywords > the list of keyword(s) to search
-    - @return A list object containing a dictionary associated with each article, including article title, URL, and summary. If the query is not successful, returns an empty list
+    - @return A list of articles containing a dictionary associated with each article, including article summary and url. If the query is not successful, returns an empty list
 
 ## Internal Details
 Below are a few internal details of the API stub implementation in response to requirements for this phase:

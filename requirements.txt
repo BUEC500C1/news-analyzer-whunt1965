@@ -7,3 +7,4 @@ PyPDF2
 pymongo
 dnspython==2.0.0
 google-cloud-language
+pynytimes

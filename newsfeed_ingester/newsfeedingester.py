@@ -5,11 +5,14 @@
 
 import logging
 import sys
+import datetime
 
 if __name__ == '__main__':
     import _newsfeedingester_events as ev
+    import _newsfeedingester_helpers as helpers
 else:
     from newsfeed_ingester import _newsfeedingester_events as ev
+    from newsfeed_ingester import _newsfeedingester_helpers as helpers
 import json
 
 # Init logger
@@ -20,7 +23,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='%(asctime)s 
 
 # Queries newsfeed sources based on provided keyword(s)
 # @param<keywords> a list of keyword(s) for the query
-# @return A list object containing a dictionary associated with each article, including article title, URL, and summary.
+# @return A list of articles containing a dictionary associated with each article, including article summary and url.
 #         If the query is not successful, returns an empty list
 def keyword_query(keywords):
     logging.info(f"{{Event: {ev.Event.KWordQuery_Initiated}, Target: {keywords}}}")
@@ -30,14 +33,13 @@ def keyword_query(keywords):
     else:
         # Insert call to keyword_query helper
         logging.info(f"{{Event: {ev.Event.KWordQuery_Success}, Target: {keywords}}}")
-        hardcoded_ret = [
-            {"Title": "Article", "URL": "fake@fakenews.com", "Summary": "This, in fact, is a fake article"}]
-        return hardcoded_ret
+        ret = helpers.kqueryhelper(keywords)
+        return ret
 
 
 # Queries newsfeed sources based on provided first/last name
 # @param<name> the name (first last, separated by a space) of the person to query
-# @return A list object containing a dictionary associated with each article, including article title, URL, and summary.
+# @return A list of articles containing a dictionary associated with each article, including article summary and url.
 #         If the query is not successful, returns an empty list
 def person_query(name):
     logging.info(f"{{Event: {ev.Event.PersonQuery_Initiated}, Target: {name}}}")
@@ -47,16 +49,15 @@ def person_query(name):
     else:
         # Insert call to keyword_query helper
         logging.info(f"{{Event: {ev.Event.PersonQuery_Success}, Target: {name}}}")
-        hardcoded_ret = [
-            {"Title": "Article", "URL": "fake@fakenews.com", "Summary": "This, in fact, is a fake article"}]
-        return hardcoded_ret
+        ret = helpers.pqueryhelper(name)
+        return ret
 
 
 # Queries newsfeed sources from a given month/year based on provided keyword(s)
-# @param<year> the year in which articles of interest would be published
-# @param<month> the month in which articles of interest would be published
+# @param<year> the year (as a numerical string, eg '1998') in which articles of interest would be published
+# @param<month> the month (as a numerical string, eg '12') in which articles of interest would be published
 # @param<keywords> a list of keyword(s) to search
-# @return A list object containing a dictionary associated with each article, including article title, URL, and summary.
+# @return A list of articles containing a dictionary associated with each article, including article summary and url.
 #         If the query is not successful, returns an empty list
 def historical_query(year, month, keywords):
     logging.info(f"{{Event: {ev.Event.HistQuery_Initiated}, Target: {year, month, keywords}}}")
@@ -64,10 +65,21 @@ def historical_query(year, month, keywords):
         logging.error(f"{{Event: {ev.Event.HistQuery_Error}, Target: {year, month, keywords}}}")
         return []
     else:
+        try:
+            month = int(month)
+            year = int(year)
+            if 0 < month < 13 and year < datetime.datetime.now().year:
+                ret = helpers.histqueryhelper(year, month, keywords)
+            elif year == datetime.datetime.now().year and month <= datetime.datetime.now().month:
+                ret = helpers.histqueryhelper(year, month, keywords)
+            else:
+                logging.error(f"{{Event: {ev.Event.HistQuery_Error}, Target: {year, month, keywords}}}")
+                return []
+        except:
+            logging.error(f"{{Event: {ev.Event.HistQuery_Error}, Target: {year, month, keywords}}}")
+            return []
         # Insert call to keyword_query helper
         logging.info(f"{{Event: {ev.Event.HistQuery_Success}, Target: {year, month, keywords}}}")
-        hardcoded_ret = [
-            {"Title": "Article", "URL": "fake@fakenews.com", "Summary": "This, in fact, is a fake article"}]
-        return hardcoded_ret
+        return ret
 
 

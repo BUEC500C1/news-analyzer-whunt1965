@@ -36,15 +36,16 @@ Currently, the file_uplaoder, newsfeed_ingester, and nlp_analyzer stubs are avai
   - The newsfeed_ingester is available on port 8081 of the EC2 instance via the following URI *<EC2 Public IP>:8081/newsfeed*. Specific functions of the API can be accessed at the following URIs via GET methods:
     - **Keyword Query** (URI: *< EC2 Public IP >:8081/newsfeed/keyquery/< string:keywords >*). Queries newsfeed sources based on provided keyword(s)
         - @param< string:keywords > A text string (containing no '/' characters) including a list of keywords separated by '&'
-        - @return A JSON object containing a single key ("Results") with a value of a list of articles found by the query. Each entry in the list contains a JSON object with the following fields: "Title": < Article Title >, "URL": < Article URL >, "Summary": < Short summary of the article >
+        - @return A JSON object containing a single key ("Results") with a value of a list of articles found by the query. Each entry in the list contains a JSON object with the following fields: "Summary": < Short summary of the article >, "URL": < Article URL >
         - Example: *< EC2 Public IP >:8081/newsfeed/keyquery/'kw1&kw2'*
     - **Person Query** (URI: *< EC2 Public IP >:8081/newsfeed/personquery/< firstname&lastname >*): Queries newsfeed sources based on provided first/last name
         - @param< string:name > A text string (containing no '/' characters) including a first and last name separated by a space
-        - @return A JSON object containing a single key ("Results") with a value of a list of articles found by the query. Each entry in the list contains a JSON object with the following fields: "Title": < Article Title >, "URL": < Article URL >, "Summary": < Short summary of the article >
+        - @return A JSON object containing a single key ("Results") with a value of a list of articles found by the query. Each entry in the list contains a JSON object with the following fields: "Summary": < Short summary of the article >, "URL": < Article URL >
         - Example: *< EC2 Public IP >:8081/newsfeed/personquery/'John Doe'*
     - **Historical Query** (URI: *< EC2 Public IP >:8081/newsfeed/histquery/year=< string:year >&month=< string:month >&keywords=< string:keywords >*). Queries newsfeed sources for a given month, year, and list of keywords
         - @param<string> A text string (containing no '/' characters) of the following format: year=< string:year >&month=< string:month >&keywords=< string:keywords where each keyword is separated by a & character >
-      - Example: *< EC2 Public IP >:8081/newsfeed/histquery/year='1998'&month='June'&keywords='arg1&arg2'*
+        - @return A JSON object containing a single key ("Results") with a value of a list of articles found by the query. Each entry in the list contains a JSON object with the following fields: "Summary": < Short summary of the article >, "URL": < Article URL >
+      - Example: *< EC2 Public IP >:8081/newsfeed/histquery/year='1998'&month='6'&keywords='arg1&arg2'*
 - **nlp_analyzer:** 
   - The nlp_analyzer is available on port 8080 of the EC2 instance via the following URI *<EC2 Public IP>:8081/nlp*. Specific functions of the API can be accessed at the following URIs via GET methods:
     - **Sentiment analysis** (URI: *< EC2 Public IP >:8081/nlp/sentiment/< string:text >*): Performs a sentiment analysis on a given text string
