@@ -51,6 +51,3 @@ jobs:
     - name: Show coverage report
       run: |
         coverage report -m
-    - name: Detailed MEM and CPU Usage
-      run: |
-        pytest --capture=tee-sys 
