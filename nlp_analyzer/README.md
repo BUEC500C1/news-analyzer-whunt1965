@@ -13,7 +13,7 @@ The nlp analyzer module provides an API to perform sentiment, enity, and syntax 
     - As a developer, I want access to log-level information on each method for debugging and system analysis purposes
     
 ## Build Instructions
-This API can be utilized by simply cloning the repo (using git clone) and then using import nlp_analyzer in whichever file needs to access the API.
+This API can be utilized by simply cloning the repo (using git clone) and then using import nlp_analyzer in whichever file needs to access the API. In addition, to utilize this API as source, you will need a Google Developer account and API key (provided as a JSON). After obtaining this key, create an environment variable called 'GOOGLE_APPLICATION_CREDENTIALS' which contains the path to your API key on your system
 
 ## API Details
 - analyze_sentiment(String text): Performs sentiment analysis on a given text
