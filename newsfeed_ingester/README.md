@@ -13,7 +13,7 @@ The newsfeed_ingester module provides an API for extracting news articles based 
     - As a developer, I want access to log-level information on each method for debugging and system analysis purposes
 
 ## Build Instructions
-This API can be utilized by simply cloning the repo (using git clone) and then using import newsfeed_ingester in whichever file needs to access the API.
+This API can be utilized by simply cloning the repo (using git clone) and then using import newsfeed_ingester in whichever file needs to access the API. In addition, to access the New Yorks Times newsfeed (used as the source API for collecting news articles), you will need a [New York Timed developer account](https://developer.nytimes.com). After setting up this account, you must store your API key as an environment variable called NYT. 
 
 ## API Details
 (Note: exact format of params to be fed into each method are TBD -- further API documentation to be provided with implementation)
