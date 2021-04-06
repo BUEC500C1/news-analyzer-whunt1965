@@ -48,15 +48,15 @@ Currently, the file_uplaoder, newsfeed_ingester, and nlp_analyzer stubs are avai
       - Example: *< EC2 Public IP >:8081/newsfeed/histquery/year='1998'&month='6'&keywords='arg1&arg2'*
 - **nlp_analyzer:** 
   - The nlp_analyzer is available on port 8080 of the EC2 instance via the following URI *<EC2 Public IP>:8081/nlp*. Specific functions of the API can be accessed at the following URIs via GET methods:
-    - **Sentiment analysis** (URI: *< EC2 Public IP >:8081/nlp/sentiment/< string:text >*): Performs a sentiment analysis on a given text string
+    - **Sentiment analysis** (URI: *< EC2 Public IP >:8080/nlp/sentiment/< string:text >*): Performs a sentiment analysis on a given text string
         - @param< string:text > A text string (containing no '/' characters)
         - @return a JSON object containing a single key ("Score") with a value of the associated sentiment score of the text
-    - **Entity Analysis** (URI: *< EC2 Public IP >:8081/nlp/entity/< string:text >*): Performs entity analysis on a given text string
+    - **Entity Analysis** (URI: *< EC2 Public IP >:8080/nlp/entity/< string:text >*): Performs entity analysis on a given text string
         - @param< string:text > A text string (containing no '/' characters)
         - @return a JSON object containing a single key ("Entities") with a value of a list of entities extracted from the text
-    - **Entity Sentiment Analysis** (URI: *< EC2 Public IP >:8081/nlp/entitysentiment/< string:text >*): Performs both entity and sentiment analysis on a given text string
+    - **Entity Sentiment Analysis** (URI: *< EC2 Public IP >:8080/nlp/entitysentiment/< string:text >*): Performs both entity and sentiment analysis on a given text string
         - @param< string:text > A text string (containing no '/' characters)
         - @return a JSON object containing a single key ("Results") with a value of a list of key-value pair entries. Within the list, each entry contains two key-value pairs: {"Entity":< entity name >,"Score":< sentiment score associated with the entity >}
-    - **Content Classification** (URI: *< EC2 Public IP >:8081/nlp/classifycontent/< string:text >*): Performs content classification on a given string text
+    - **Content Classification** (URI: *< EC2 Public IP >:8080/nlp/classifycontent/< string:text >*): Performs content classification on a given string text
         - @param< string:text > A text string (containing no '/' characters and a minimum of 20 words)
         - @return a JSON object containing a single key ("Results") with a list of key-value pair entries. Within the list, each entry contains two key-value pairs: {"Category":< category name >,"Score":< confidence score associated with the category >}
