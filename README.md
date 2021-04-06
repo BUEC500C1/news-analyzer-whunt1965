@@ -19,7 +19,7 @@ Notes on testing:
       - UPDATE (update the name of your file): 18.217.67.70:80/FileUploader/update/test_fileuploader/identifier={"Name":"test.pdf"}&fileobj={"Name":"test4.pdf"}
       - DELETE: 18.217.67.70:80/FileUploader/delete/test_fileuploader/identifier={"Name":"test4.pdf"}
 
-  - *NewsFeed Ingester* - 18.217.67.70:8081 
+  - *NewsFeed Ingester* - 18.217.67.70:8081 (Note: if this page hangs, may be the NYT API -- it went down on me today when making these links)
     - Keyword Query: 18.217.67.70:8081/newsfeed/keyquery/'Oil&OPEC'
     - Person Query: 18.217.67.70:8081/newsfeed/personquery/'John Doe'
     - Historical Query: 18.217.67.70:8081/newsfeed/histquery/year=1998&month=6&keywords=Stocks&Bonds
@@ -27,7 +27,7 @@ Notes on testing:
     - Sentiment Analysis: 18.217.67.70:8080/nlp/sentiment/"some test text here"
     - Entity Analysis: 18.217.67.70:8080/nlp/entity/"some test text here about Lebron James"
     - Entity-Sentiment Analysis: 18.217.67.70:8080/nlp/entitysentiment/"some test text here about Lebron James. I do like Lebron James"
-    - Content Classification 18.217.67.70:8080/nlp/classifycontent/"some test text here which needs to be atleast 20 words. I think that the NCAA tournament was awesome, although I wish my Vols had won"
+    - Content Classification 18.217.67.70:8080/nlp/classifycontent/"some test text here which needs to be atleast 20 words. I hate Notre Dame. But I love Alabama and I feel very strongly about the Georgia Bulldogs. That is all I want to say"
 
 
 ## Links to Component and API Documentation:
