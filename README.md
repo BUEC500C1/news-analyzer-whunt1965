@@ -19,7 +19,7 @@ Notes on testing:
       - UPDATE (update the name of your file): 18.217.67.70:80/FileUploader/update/test_fileuploader/identifier={"Name":"test.pdf"}&fileobj={"Name":"test4.pdf"}
       - DELETE: 18.217.67.70:80/FileUploader/delete/test_fileuploader/identifier={"Name":"test4.pdf"}
 
-  - *NewsFeed Ingester* - 18.217.67.70:8081 (Note: if this page hangs, may be the NYT API -- it went down on me today when making these links)
+  - *NewsFeed Ingester* - 18.217.67.70:8081 (Note: if this page hangs, may be the NYT API -- it went down on me today when making these links (after successfully testing 10 minutes prior). My logs show that a request was submitted but the NYT server responded with 443)
     - Keyword Query: 18.217.67.70:8081/newsfeed/keyquery/'Oil&OPEC'
     - Person Query: 18.217.67.70:8081/newsfeed/personquery/'John Doe'
     - Historical Query: 18.217.67.70:8081/newsfeed/histquery/year=1998&month=6&keywords=Stocks&Bonds
