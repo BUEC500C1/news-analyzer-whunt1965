@@ -26,8 +26,8 @@ Notes on testing:
   - *NLP Analysis - 18.217.67.70:8080*
     - Sentiment Analysis: 18.217.67.70:8080/nlp/sentiment/"some test text here"
     - Entity Analysis: 18.217.67.70:8080/nlp/entity/"some test text here about Lebron James"
-    - Entity-Sentiment Analysis: 18.217.67.70:8080/nlp/entity/"some test text here about Lebron James. I do like Lebron James"
-    - Content Classification 18.217.67.70:8080/nlp/entity/"some test text here which needs to be atleast 20 words. I think that the NCAA tournament was awesome, although I wish my Vols had won"
+    - Entity-Sentiment Analysis: 18.217.67.70:8080/nlp/entitysentiment/"some test text here about Lebron James. I do like Lebron James"
+    - Content Classification 18.217.67.70:8080/nlp/classifycontent/"some test text here which needs to be atleast 20 words. I think that the NCAA tournament was awesome, although I wish my Vols had won"
 
 
 ## Links to Component and API Documentation:
