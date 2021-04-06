@@ -12,7 +12,7 @@ Notes on testing:
 - For the file uploader, please use the username *test_fileuploader* for uploading and accessing files. This is a name that's already in the system which is allowed to create, access, and modify files (since we did not get to a login module, only this default name is enabled). Additionally, no files are currently in teh DB. You will need to upload a file if you want to view results!
 - Sample Queries for each of the API's
   - *File Uploader* - 18.217.67.70:80
-    - Upload - 18.217.67.70:80/upload just fill in the form on the webpage using test_fileuploader as the user
+    - Upload - 18.217.67.70:80/FileUploader/upload - just fill in the form on the webpage using test_fileuploader as the user
     - READ
       - READ ALL FILES BELONGING TO A USER: (note, there is currently nothing for this user in the DB. Please first upload a file) - 18.217.67.70:80/FileUploader/view/test_fileuploader
       - READ A SINGLE FILE BELONGING TO A USER: (assuming you have created a file called test.pdf) - 18.217.67.70:80/FileUploader/view/test_fileuploader/file={"Name":"test.pdf"}
