@@ -27,7 +27,7 @@ Notes on testing:
     - Sentiment Analysis: 18.217.67.70:8080/nlp/sentiment/"some test text here"
     - Entity Analysis: 18.217.67.70:8080/nlp/entity/"some test text here about Lebron James"
     - Entity-Sentiment Analysis: 18.217.67.70:8080/nlp/entitysentiment/"some test text here about Lebron James. I do like Lebron James"
-    - Content Classification 18.217.67.70:8080/nlp/classifycontent/"some test text here which needs to be atleast 20 words. I hate Notre Dame. But I love Alabama and I feel very strongly about the Georgia Bulldogs. That is all I want to say"
+    - Content Classification (note: query text must be atleast 20 words) 18.217.67.70:8080/nlp/classifycontent/"I hate Notre Dame football. But I love the Alabama Crimson Tide and I feel very strongly about the Georgia Bulldogs. That is all I want to say"
 
 
 ## Links to Component and API Documentation:
