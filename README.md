@@ -1,5 +1,35 @@
 # EC500 - Project 2 
 This repository contains an application designed to help journalists store and analyze documents (as well as query additional information from other news feeds) in order to inform stories they produce. Descriptions of key components (and API documentation) are linked below.
+
+## AWS Testing
+(Note -- see Web API's below for more details)
+
+IP for Running EC2 Instance: 18.217.67.70
+
+Notes on testing:
+- I would recommend using Google Chrome as Safari does not seem to like the EC2 IPs
+- If there are issues with the file uploader not accessing the DB, please let me know. I'm using Mongo Atlas (cloud MongoDB) for file storage and have whitelisted the current IP of the EC2 instance. If this IP changes while running, though, I will need to updated the allowed IP's in my system
+- For the file uploader, please use the username *test_fileuploader* for uploading and accessing files. This is a name that's already in the system which is allowed to create, access, and modify files (since we did not get to a login module, only this default name is enabled). Additionally, no files are currently in teh DB. You will need to upload a file if you want to view results!
+- Sample Queries for each of the API's
+  - *File Uploader* - 18.217.67.70:80
+    - Upload -- just fill in the form on the webpage using test_fileuploader as the user
+    - READ
+      - READ ALL FILES BELONGING TO A USER: (note, there is currently nothing for this user in the DB. Please first upload a file) - 18.217.67.70:80/FileUploader/view/test_fileuploader
+      - READ A SINGLE FILE BELONGING TO A USER: (assuming you have created a file called test.pdf) - 18.217.67.70:80/FileUploader/view/test_fileuploader/file={"Name":"test.pdf"}
+      - UPDATE (update the name of your file): 18.217.67.70:80/FileUploader/update/test_fileuploader/identifier={"Name":"test.pdf"}&fileobj={"Name":"test4.pdf"}
+      - DELETE: 18.217.67.70:80/FileUploader/delete/test_fileuploader/identifier={"Name":"test4.pdf"}
+
+  - *NewsFeed Ingester* - 18.217.67.70:8081 
+    - Keyword Query: 18.217.67.70:8081/newsfeed/keyquery/'Oil&OPEC'
+    - Person Query: 18.217.67.70:8081/newsfeed/personquery/'John Doe'
+    - Historical Query: 18.217.67.70:8081/newsfeed/histquery/year=1998&month=6&keywords=Stocks&Bonds
+  - *NLP Analysis - 18.217.67.70:8080*
+    - Sentiment Analysis: 18.217.67.70:8080/nlp/sentiment/"some test text here"
+    - Entity Analysis: 18.217.67.70:8080/nlp/entity/"some test text here about Lebron James"
+    - Entity-Sentiment Analysis: 18.217.67.70:8080/nlp/entity/"some test text here about Lebron James. I do like Lebron James"
+    - Content Classification 18.217.67.70:8080/nlp/entity/"some test text here which needs to be atleast 20 words. I think that the NCAA tournament was awesome, although I wish my Vols had won"
+
+
 ## Links to Component and API Documentation:
 - **file_uploader:** [link](https://github.com/BUEC500C1/news-analyzer-whunt1965/blob/main/file_uploader/README.md)
 - **newsfeed_ingester:** [link](https://github.com/BUEC500C1/news-analyzer-whunt1965/blob/main/newsfeed_ingester/README.md)
@@ -16,6 +46,7 @@ Currently, the file_uplaoder, newsfeed_ingester, and nlp_analyzer stubs are avai
         - **READ ALL FILES BELONGING TO A USER:** (URI: *< EC2 Public IP >:80/FileUploader/view/< string:username >*)
             - @param< username > The username of the user in the DB whose files we want to view
             - @return If the read is successful returns the file as a JSON object containing the files found along with a Success code. Otherwise, returns the username and an error code
+            - Example: < EC2 Public IP >:80/FileUploader/view/test_fileuploader
         - **READ A SINGLE FILE BELONGING TO A USER:** (URI: *< EC2 Public IP >:80/FileUploader/view/< string:username >/file=< string:fileobj >*)
             - @param< username > The username of the user in the DB whose files we want to view
             - @param<fileobj> A JSON object containing fields from which the file can be referenced (eg, Title or _id)
@@ -45,7 +76,7 @@ Currently, the file_uplaoder, newsfeed_ingester, and nlp_analyzer stubs are avai
     - **Historical Query** (URI: *< EC2 Public IP >:8081/newsfeed/histquery/year=< string:year >&month=< string:month >&keywords=< string:keywords >*). Queries newsfeed sources for a given month, year, and list of keywords
         - @param<string> A text string (containing no '/' characters) of the following format: year=< string:year >&month=< string:month >&keywords=< string:keywords where each keyword is separated by a & character >
         - @return A JSON object containing a single key ("Results") with a value of a list of articles found by the query. Each entry in the list contains a JSON object with the following fields: "Summary": < Short summary of the article >, "URL": < Article URL >
-      - Example: *< EC2 Public IP >:8081/newsfeed/histquery/year='1998'&month='6'&keywords='arg1&arg2'*
+      - Example: *< EC2 Public IP >:8081/newsfeed/histquery/year=1998&month=6&keywords=arg1&arg2*
 - **nlp_analyzer:** 
   - The nlp_analyzer is available on port 8080 of the EC2 instance via the following URI *<EC2 Public IP>:8081/nlp*. Specific functions of the API can be accessed at the following URIs via GET methods:
     - **Sentiment analysis** (URI: *< EC2 Public IP >:8080/nlp/sentiment/< string:text >*): Performs a sentiment analysis on a given text string
